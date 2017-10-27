@@ -10,7 +10,7 @@ class User : public UserInterface{
       void setCommand();
       void exit();
    private:
-      Command* cmd_controller;
+		Command* cmd_controller;
 };
 
 #endif
