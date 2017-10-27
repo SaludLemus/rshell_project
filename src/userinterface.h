@@ -3,8 +3,8 @@
 
 class UserInterface {
    public:
-      virtual void exit(); // exit the rshell
-      virtual void setCommand(); // will set the parser's data member
+      virtual void exit() = 0; // exit the rshell
+      virtual void setCommand() = 0; // will set the parser's data member
 };
 
 #endif
