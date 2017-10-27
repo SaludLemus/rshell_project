@@ -8,7 +8,6 @@ class User : public UserInterface{
       User();
       ~User(); // dealloc data member
       void setCommand();
-      void exit();
    private:
 		Command* cmd_controller;
 };
