@@ -34,7 +34,7 @@ void Command::deallocParser() {
 
 
 void Command::deallocCMDList() {
-	// for(...)
-		// delete ...
+	for (list<CommandLine*>::iterator itr = cmd_list.begin(); itr !+ cmd_list.end(); ++itr)
+		delete (*itr);
 	return;
 }
