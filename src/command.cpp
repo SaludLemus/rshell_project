@@ -1,5 +1,5 @@
 #include "command.h"
-
+#include <cstdlib>
 Command::Command() : parse_cmd(0) {}
 
 Command::~Command() {
@@ -9,9 +9,8 @@ Command::~Command() {
 
 void Command::init(const string &user_input) {
 	deallocParser();
-	parse_cmd = new Parse();
+	parse_cmd = new Parse(user_input);
 	
-	parse_cmd->str.setString(user_input); // set Tokenizer's buffer
 	
 	commandIterator(); // start parse
 	return;
@@ -19,10 +18,29 @@ void Command::init(const string &user_input) {
 
 void Command::commandIterator() {
 	deallocCMDList();
+	CommandLine* current_command = parse_cmd->nextParse();
+	CommandLine* prev_command = 0; // for connectors
 	
-	while (parse_cmd->nextParse() != "") // create commands from user's input
-		cmd_list.push_back(new CommandLine(parse_cmd->current_parse));
+	while (true) {// create commands from user's input
+		cmd_list.push_back(current_command);
+		
+		if (current_command->getConnector() == exitCC) { // reached end of command
+			// execute command and then exit
+			exit();
+		}
+		
+		
+		prev_command = current_command;
+		current_command = parse_cmd->nextParse(); // get next command
+	}
 	// loop through the list and execute command or exit
+	
+	
+	return;
+}
+
+void Command::exit() {
+	exit(0); // end program
 	return;
 }
 
