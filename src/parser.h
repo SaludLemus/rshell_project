@@ -1,18 +1,22 @@
 #ifndef parser_h_
 #define parser_h_
-#include <boost/tokenizer.hpp>
 #include <string>
+#include "commandline.h"
+
 using namespace std;
 class Parser {
+	private:
+		string str;
+		size_t position;
+	
 	public:
 		Parser();
-		Parser(const string &);
-		string nextParse();
-		void removeLastChar();
-		bool ifLast(const string&);
-		string current_parse; // permit access to command class
+		Parser(const string & user_input);
+		CommandLine nextParse(); // permit access to command class
 	private:
-		Tokenizer str;
+
+		void removeLastChar();
+		bool ifLast();
 };
 
 #endif

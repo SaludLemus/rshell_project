@@ -1,9 +1,15 @@
 #include "parser.h"
 
-Parser::Parser() {}
+Parser::Parser() {
+	str = "";
+	position = 0;
+	return;
+}
 
 Parser::Parser(const string &user_input) {
-	str.setString(user_input); // set buffer
+	str = user_input;
+	position = 0;
+	return;
 }
 
 void Parser::removeLastChar() {
@@ -16,7 +22,6 @@ bool Parser::ifLast() {
 	return false;
 }
 
-string Parser::nextParse() {
-	
-	return "";
-}
+//CommandLine Parser::nextParse() {
+//	return;
+//}
