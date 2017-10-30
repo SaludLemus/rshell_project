@@ -1,18 +1,21 @@
 #include "commandline.h"
 
-CommandLine::CommandLine(){
-    strncpy(command, "exit", 3);
+CommandLine::CommandLine(): command("exit"){
     connector = exitCC;
     return;
 }
 
-CommandLine::CommandLine(char* _command, CommandConnector _connector){
-    command = _command; 
+CommandLine::CommandLine(const char* _command, CommandConnector _connector): command(_command){
     connector = _connector;
     return;
 }
     
-char* CommandLine::getCommand() {
+CommandLine::~CommandLine(){
+    delete command;
+    return;
+}
+    
+const char* CommandLine::getCommand() {
     return command;
 }
 

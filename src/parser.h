@@ -3,20 +3,19 @@
 #include <string>
 #include "commandline.h"
 
-using namespace std;
+using std::string;
 class Parser {
 	private:
 		string str;
-		size_t position;
+		unsigned position;
 	
 	public:
 		Parser();
 		Parser(const string & user_input);
-		CommandLine nextParse(); // permit access to command class
+		CommandLine* nextParse(); // permit access to command class
 	private:
-
 		void removeLastChar();
-		bool ifLast();
+		int ifLast(size_t &, size_t &);
 };
 
 #endif

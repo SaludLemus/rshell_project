@@ -6,14 +6,15 @@ enum CommandConnector{exitCC, next, success, fail};
 
 class CommandLine{
     private:
-        char* command;
+        const char* command;
         CommandConnector connector;
     
     public:
         CommandLine();
-        CommandLine(char* _command, CommandConnector _connector);
+        CommandLine(const char* _command, CommandConnector _connector);
+        ~CommandLine();
     
-        char* getCommand();
+        const char* getCommand();
         CommandConnector getConnector();
 };
 
