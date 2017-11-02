@@ -32,13 +32,13 @@ int Parser::ifLast(size_t & newposition, size_t & lastposition) {
 		lastposition = newposition - 1;
 		return 1; // continueCC
 	}
-	if(str.string::substr(lastposition, 2) == "&&"){
-		lastposition = newposition - 3;
+	if(str.string::substr(newposition + 1, 2) == "&&"){
+		lastposition = newposition;
 		return 2; // andCC
 	}
 		
-	if(str.string::substr(lastposition, 2) == "||"){
-		lastposition = newposition - 3;
+	if(str.string::substr(newposition + 1, 2) == "||"){
+		lastposition = newposition;
 		return 3; // orCC
 	}
 	
