@@ -6,13 +6,12 @@
 class ContinueC : public Connector {
 	public:
 		ContinueC();
-		~ContinueC();
+		ContinueC(Connector* single_cmd = 0);
+		~ContinueC() {}
 		void execute() = 0;
 		bool checkExistence();
-	protected:
-		bool cmdSuccess;
 	private:
-		Connector* default_command; // single command
+		Connector* single_command; // single command
 };
 
 #endif

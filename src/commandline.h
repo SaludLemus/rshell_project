@@ -4,7 +4,7 @@
 
 enum CommandConnector{exitCC, next, success, fail};
 
-class CommandLine{
+class CommandLine {
     private:
         const char* command;
         CommandConnector connector;

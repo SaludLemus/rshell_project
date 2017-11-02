@@ -3,8 +3,9 @@
 
 class Connector {
 	public:
-		Connector();
-		~Connector();
+		Connector() {cmdSuccess = false;}
+		Connector(bool success) : cmdSuccess(success) {}
+		~Connector() {}
 	protected:
 		bool cmdSuccess; // true if cmd worked, else false (for && and ||)
 	public:

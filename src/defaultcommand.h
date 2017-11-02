@@ -7,11 +7,10 @@
 class DefaultCommand : public Connector {
 	public:
 		DefaultCommand();
-		~DefaultCommand();
+		DefaultCommand(CommandLine* new_cmd = 0);
+		~DefaultCommand() {}
 		void execute() = 0;
 		bool checkExistence();
-	protected:
-		bool cmdSuccess;
 	private:
 		CommandLine* exec_command; // single command (leaf node)
 };

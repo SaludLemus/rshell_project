@@ -6,14 +6,13 @@
 class ExitC : public Connector {
 	public:
 		ExitC();
-		~ExitC();
+		ExitC(Connector* left_child = 0);
+		~ExitC() {}
 		void execute() = 0;
 		bool checkExistence();
-	protected:
-		bool cmdSuccess;
 	private:
-		Connector* left_child;
-		Connector* right_child;
+		Connector* single_command;
+		void exitProg();
 };
 
 #endif

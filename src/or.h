@@ -6,11 +6,10 @@
 class OrC : public Connector {
 	public:
 		OrC();
-		~OrC();
+		OrC(Connector* left_child, Connector* right_child);
+		~OrC() {}
 		void execute() = 0;
 		bool checkExistence();
-	protected:
-		bool cmdSuccess;
 	private:
 		Connector* left_child;
 		Connector* right_child;
