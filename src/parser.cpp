@@ -32,13 +32,13 @@ int Parser::ifLast(size_t & newposition, size_t & lastposition) {
 		lastposition = newposition - 1;
 		return 1; // continueCC
 	}
-	if(str.string::substr(newposition + 1, 2) == "&&"){
-		lastposition = newposition;
+	if(str.string::substr(lastposition, 2) == "&&"){
+		lastposition = newposition - 3;
 		return 2; // andCC
 	}
 		
-	if(str.string::substr(newposition + 1, 2) == "||"){
-		lastposition = newposition;
+	if(str.string::substr(lastposition, 2) == "||"){
+		lastposition = newposition - 3;
 		return 3; // orCC
 	}
 	
@@ -48,6 +48,9 @@ int Parser::ifLast(size_t & newposition, size_t & lastposition) {
 }
 
 CommandLine* Parser::nextParse() {
+	if (position == str.length())
+			return 0;
+	
 	size_t newposition = position;
 	size_t lastposition = position;
 	int ifLastConnector = 0;
@@ -58,9 +61,21 @@ CommandLine* Parser::nextParse() {
 		ifLastConnector = ifLast(newposition, lastposition);
 	}while(ifLastConnector == -1);
 	
-	CommandLine* CL = new CommandLine(str.string::substr(position, lastposition - position).c_str(), static_cast<CommandConnector>(ifLastConnector));
+	string new_str = str.string::substr(position, lastposition - position);
+	char* new_cmd = new char[new_str.size() + 1]; // alloc. mem.
 	
-	position = newposition + 1;
+	for (unsigned int i = 0; i < new_str.size(); ++i)
+		new_cmd[i] = new_str.at(i); // get cmd from string
+	new_cmd[new_str.size()] = '\0'; // append null term.
+	
+	
+	CommandLine* CL = new CommandLine(new_cmd, static_cast<CommandConnector>(ifLastConnector));
+	
+	if (lastposition == str.size())
+		position = str.size();
+	else position = newposition + 1;
+	
+	
 	
 	return CL;
 }

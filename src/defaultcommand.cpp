@@ -26,6 +26,6 @@ CommandConnector DefaultCommand::getConnector() {
 	if (checkExistence()) return exec_command->getConnector();
 }
     
-const char* DefaultCommand::getCMD() {
+char* DefaultCommand::getCMD() {
 	return exec_command->getCommand();	
 }

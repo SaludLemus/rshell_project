@@ -14,7 +14,7 @@ class Connector {
 		virtual void execute() = 0; // execute depends on connectors or single command
 		virtual bool checkExistence() = 0; // true if child exists
 		virtual bool checkStatus() = 0;
-		virtual const char* getCMD() = 0;
+		virtual char* getCMD() = 0;
 		virtual CommandConnector getConnector() = 0;
 	private:
 };
