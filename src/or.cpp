@@ -20,3 +20,12 @@ bool Or::checkExistence() {
 	if (left_child && right_child) return true;
 	return false;
 }
+
+void Or::deallocChildren() {
+	if (left_child)
+		delete left_child;
+		
+	if (right_child)
+		delete right_child;
+	return;
+}

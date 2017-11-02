@@ -3,9 +3,10 @@
 
 #include "parse.h"
 #include "commandline.h"
+#include "connector.h"
 #include <iostream>
 #include <string>
-#include <list>
+#include <vector>
 using namespace std;
 
 class Command {
@@ -15,11 +16,11 @@ class Command {
 		Command();
 		~Command();
       Parse* parse_cmd;
-      List<CommandLine*> cmd_list;
+      vector<Connector*> cmd_list;
       void commandIterator(); // will call exit() if "exit" exists or end of parse is reached
-      void exit();
       void deallocParser();
       void deallocCMDList();
+      void exitProg();
 };
 
 #endif

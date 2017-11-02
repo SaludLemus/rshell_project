@@ -7,7 +7,9 @@ class ExitC : public Connector {
 	public:
 		ExitC();
 		ExitC(Connector* left_child = 0);
-		~ExitC() {}
+		~ExitC() {
+			if (single_command) delete single_command;
+		}
 		void execute() = 0;
 		bool checkExistence();
 	private:

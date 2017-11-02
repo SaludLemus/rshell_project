@@ -2,7 +2,7 @@
 #define __COMMANDLINE_H__
 #include <cstring>
 
-enum CommandConnector{exitCC, next, success, fail};
+enum CommandConnector{exitCC, continueCC, andCC, orCC};
 
 class CommandLine {
     private:

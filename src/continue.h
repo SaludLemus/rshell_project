@@ -7,7 +7,10 @@ class ContinueC : public Connector {
 	public:
 		ContinueC();
 		ContinueC(Connector* single_cmd = 0);
-		~ContinueC() {}
+		~ContinueC() {
+			if (single_command)
+				delete single_command;
+		}
 		void execute() = 0;
 		bool checkExistence();
 	private:

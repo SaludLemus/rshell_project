@@ -23,3 +23,11 @@ bool And::checkExistence() { // no seg. fault
 	if (left_child && right_child) return true;
 	return false;
 }
+
+void And::deallocChildren() {
+	if (left_child)
+		delete left_child;
+	if (right_child)
+		delete right_child;
+	return;
+}

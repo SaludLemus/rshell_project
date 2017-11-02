@@ -18,42 +18,32 @@ void Command::init(const string &user_input) {
 
 void Command::commandIterator() {
 	deallocCMDList();
-	CommandLine* current_command = parse_cmd->nextParse();
-	CommandLine* prev_command = 0; // for connectors
-	
-	//while (true) {// create commands from user's input
-		//cmd_list.push_back(current_command);
-		
-		//if (current_command->getConnector() == exitCC) { // reached end of command
-			// execute command and then exit
-			//exit();
-		//}
-		
-		
-		//prev_command = current_command;
-		//current_command = parse_cmd->nextParse(); // get next command
-	//}
-	// loop through the list and execute command or exit
-	
+	CommandLine* new_cmd = 0;
+	// use parse_cmd
 	do {
-		current_command = parse_cmd->nextParse();
-		cmd_list.push_back(current_command);
-	}
-	while (current_command->getConnector() != exitCC); // continue getting commands until end of input
+		cmd_list.push_back(new DefaultCommand(parse_cmd->nextParse()));
+		
+	} while (cmd_list.size() != 0 && cmd_list.at(cmd_list.size() - 1)->getConnector() != exitCC); // continue parsing until last command is reached or no input is entered
 	
-	for (list<CommandLine*>::iterator itr = cmd_list.begin(); itr != cmd_list.end(); ++itr) {
-		if ((*itr)->getConnector() == success || (*itr)->getConnector() == fail) { // handle AND or ||
-			// check prev_command ptr for a sucess or failure and execute based on that
-			prev_command = (*itr); // for the next command
+	
+	for (unsigned int i = 0; i < cmd_list.size(); ++i) { // iterate through each cmd
+		if (cmd_list.at(i)->getConnector() == 0) { // exitCC
+			cmd_list.at(i)->execute();
+			exitProg();
 		}
-		// handle exitCC
-		// handle next
+		else if (cmd_list.at(i)->getConnector() == 1) // continueCC
+			cmd_list.at(i)->execute();
+		else if (cmd_list.at(i)->getConnector() == 2) {// andCC
+			cmd_list.at(i)->execute();
+			if (cmd_list.at(i)->checkStatus() == false) // skip next cmd
+				++i;
+		}
+		else if (cmd_list.at(i)->getConnector() == 3) // orCC
+			cmd_list.at(i)->execute();
+			if (cmd_list.at(i)->checkStatus() == true) // skip next cmd
+				++i;
 	}
-	return;
-}
-
-void Command::exit() {
-	exit(0); // end program
+	
 	return;
 }
 
@@ -64,8 +54,14 @@ void Command::deallocParser() {
 }
 
 
+void Command::exitProg() }
+	exit(0);
+	return;
+}
+
+
 void Command::deallocCMDList() {
-	for (list<CommandLine*>::iterator itr = cmd_list.begin(); itr !+ cmd_list.end(); ++itr)
-		delete (*itr);
+	for (unsigned int i = 0; i < cmd_list.size(); ++i)
+		delete cmd_list.at(i);
 	return;
 }

@@ -11,6 +11,7 @@ class Connector {
 	public:
 		virtual void execute() = 0; // execute depends on connectors or single command
 		virtual bool checkExistence() = 0; // true if child exists
+		virtual bool checkStatus();
 	private:
 };
 

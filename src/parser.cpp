@@ -21,25 +21,25 @@ void Parser::removeLastChar() {
 }
 
 // detects if the parsed phrase is the last. returns the enum value if it is the last.
-int Parser::ifLast(size_t & newposition, size_t & lastposiiton) {
+int Parser::ifLast(size_t & newposition, size_t & lastposition) {
 	
 	if (newposition == string::npos){
-		lastposiiton = str.length();
-		return 0;
+		lastposition = str.length();
+		return 0; // exitCC
 	}
 		
 	if(str[newposition - 1] == ';'){
-		lastposiiton = newposition - 1;
-		return 1;
+		lastposition = newposition - 1;
+		return 1; // continueCC
 	}
-	if(str.string::substr(lastposiiton, 2) == "&&"){
-		lastposiiton = newposition - 3;
-		return 2;
+	if(str.string::substr(lastposition, 2) == "&&"){
+		lastposition = newposition - 3;
+		return 2; // andCC
 	}
 		
-	if(str.string::substr(lastposiiton, 2) == "||"){
-		lastposiiton = newposition - 3;
-		return 3;
+	if(str.string::substr(lastposition, 2) == "||"){
+		lastposition = newposition - 3;
+		return 3; // orCC
 	}
 	
 	newposition++;
@@ -49,16 +49,16 @@ int Parser::ifLast(size_t & newposition, size_t & lastposiiton) {
 
 CommandLine* Parser::nextParse() {
 	size_t newposition = position;
-	size_t lastposiiton = position;
+	size_t lastposition = position;
 	int ifLastConnector = 0;
 	
 	do{
-		lastposiiton = newposition;
-		newposition = str.string::find(" ", newposition);
-		ifLastConnector = ifLast(newposition, lastposiiton);
+		lastposition = newposition;
+		newposition = str.string::find(" ", newposition); // returns string::npos if not found
+		ifLastConnector = ifLast(newposition, lastposition);
 	}while(ifLastConnector == -1);
 	
-	CommandLine* CL = new CommandLine(str.string::substr(position, lastposiiton - position).c_str(), static_cast<CommandConnector>(ifLastConnector));
+	CommandLine* CL = new CommandLine(str.string::substr(position, lastposition - position).c_str(), static_cast<CommandConnector>(ifLastConnector));
 	
 	position = newposition + 1;
 	

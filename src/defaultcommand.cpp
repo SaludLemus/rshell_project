@@ -16,3 +16,12 @@ bool DefaultCommand::checkExistence() {
 	if (exec_command) return true;
 	return false;
 }
+
+bool DefaultCommand::checkStatus() {
+	return cmdSuccess;
+}
+
+CommandConnector DefaultCommand::getConnector() {
+	if (checkExistence) return exec_command->getConnector();
+}
+    
