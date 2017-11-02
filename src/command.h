@@ -1,9 +1,10 @@
 #ifndef Command_h_
 #define Command_h_
 
-#include "parse.h"
+#include "parser.h"
 #include "commandline.h"
 #include "connector.h"
+#include "defaultcommand.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -11,11 +12,11 @@ using namespace std;
 
 class Command {
    public:
-      void init(const string &);
-   private:
 		Command();
 		~Command();
-      Parse* parse_cmd;
+      void init(const string &);
+   private:
+      Parser* parse_cmd;
       vector<Connector*> cmd_list;
       void commandIterator(); // will call exit() if "exit" exists or end of parse is reached
       void deallocParser();

@@ -9,7 +9,7 @@ Command::~Command() {
 
 void Command::init(const string &user_input) {
 	deallocParser();
-	parse_cmd = new Parse(user_input);
+	parse_cmd = new Parser(user_input);
 	
 	
 	commandIterator(); // start parse
@@ -27,21 +27,22 @@ void Command::commandIterator() {
 	
 	
 	for (unsigned int i = 0; i < cmd_list.size(); ++i) { // iterate through each cmd
-		if (cmd_list.at(i)->getConnector() == 0) { // exitCC
-			cmd_list.at(i)->execute();
-			exitProg();
-		}
-		else if (cmd_list.at(i)->getConnector() == 1) // continueCC
-			cmd_list.at(i)->execute();
-		else if (cmd_list.at(i)->getConnector() == 2) {// andCC
-			cmd_list.at(i)->execute();
-			if (cmd_list.at(i)->checkStatus() == false) // skip next cmd
-				++i;
-		}
-		else if (cmd_list.at(i)->getConnector() == 3) // orCC
-			cmd_list.at(i)->execute();
-			if (cmd_list.at(i)->checkStatus() == true) // skip next cmd
-				++i;
+	//	if (cmd_list.at(i)->getConnector() == 0) { // exitCC
+		//	cmd_list.at(i)->execute();
+		//	exitProg();
+	//	}
+	//	else if (cmd_list.at(i)->getConnector() == 1) // continueCC
+	//		cmd_list.at(i)->execute();
+	//	else if (cmd_list.at(i)->getConnector() == 2) {// andCC
+	//		cmd_list.at(i)->execute();
+	//		if (cmd_list.at(i)->checkStatus() == false) // skip next cmd
+	//			++i;
+	//	}
+		//else if (cmd_list.at(i)->getConnector() == 3) // orCC
+		//	cmd_list.at(i)->execute();
+		//	if (cmd_list.at(i)->checkStatus() == true) // skip next cmd
+		//		++i;
+		cout << cmd_list.at(i)->getCMD() << endl; // null term.
 	}
 	
 	return;
@@ -54,7 +55,7 @@ void Command::deallocParser() {
 }
 
 
-void Command::exitProg() }
+void Command::exitProg() {
 	exit(0);
 	return;
 }

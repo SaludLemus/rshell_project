@@ -3,7 +3,7 @@
 
 #include "userinterface.h"
 #include "command.h"
-class User : public UserInterface{
+class User : public UserInterface {
    public:
       User();
       ~User(); // dealloc data member

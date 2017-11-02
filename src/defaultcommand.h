@@ -12,10 +12,11 @@ class DefaultCommand : public Connector {
 			if (exec_command)
 				delete exec_command;
 		}
-		void execute() = 0;
+		void execute();
 		bool checkExistence();
 		CommandConnector getConnector();
 		bool checkStatus();
+		const char* getCMD();
 	private:
 		CommandLine* exec_command; // single command (leaf node)
 };

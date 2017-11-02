@@ -1,5 +1,5 @@
 #include "defaultcommand.h"
-
+#include <unistd.h>
 DefaultCommand::DefaultCommand() : Connector(), exec_command(0) {}
 
 DefaultCommand::DefaultCommand(CommandLine* new_cmd) : Connector(), exec_command(new_cmd) {}
@@ -7,7 +7,8 @@ DefaultCommand::DefaultCommand(CommandLine* new_cmd) : Connector(), exec_command
 void DefaultCommand::execute() {
 	if (checkExistence()) {
 			// do the sys calls here, if succeed set cmdSuccess to true, else false
-		
+		pid_t child_pid;
+		int child_status;
 	}
 	return;
 }
@@ -22,6 +23,9 @@ bool DefaultCommand::checkStatus() {
 }
 
 CommandConnector DefaultCommand::getConnector() {
-	if (checkExistence) return exec_command->getConnector();
+	if (checkExistence()) return exec_command->getConnector();
 }
     
+const char* DefaultCommand::getCMD() {
+	return exec_command->getCommand();	
+}

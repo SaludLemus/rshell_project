@@ -21,6 +21,6 @@ void User::setCommand() {
  
 	cmd_controller = new Command();
 
-	cmd_contoller->init(user_input); // set parser's data member
+	cmd_controller->init(user_input); // set parser's data member
    return;
 }
