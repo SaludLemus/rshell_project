@@ -16,6 +16,7 @@ class CommandLine{
     
         const char* getCommand();
         CommandConnector getConnector();
+        void display();
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "commandline.h"
+#include <iostream>
 
 CommandLine::CommandLine(): command("exit"){
     connector = exitCC;
@@ -11,7 +12,7 @@ CommandLine::CommandLine(const char* _command, CommandConnector _connector): com
 }
     
 CommandLine::~CommandLine(){
-    delete command;
+    //delete command;
     return;
 }
     
@@ -21,4 +22,8 @@ const char* CommandLine::getCommand() {
 
 CommandConnector CommandLine::getConnector() {
     return connector;
+}
+
+void CommandLine::display(){
+    std::cout << command << " " << connector << std::endl;
 }
