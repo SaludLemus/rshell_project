@@ -10,7 +10,7 @@ User::~User() {
       delete cmd_controller;
 }
 
-void User::setCommand() {
+bool User::setCommand() {
    string user_input; // store command
 
    cout << "$ ";
@@ -21,6 +21,6 @@ void User::setCommand() {
  
 	cmd_controller = new Command();
 
-	cmd_contoller->init(user_input); // set parser's data member
-   return;
+	cmd_controller->init(user_input); // set parser's data member
+   return true;
 }

@@ -7,7 +7,7 @@ class User : public UserInterface{
    public:
       User();
       ~User(); // dealloc data member
-      void setCommand();
+      bool setCommand();
    private:
 		Command* cmd_controller;
 };
