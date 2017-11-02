@@ -1,7 +1,7 @@
 #ifndef Command_h_
 #define Command_h_
 
-#include "parse.h"
+#include "parser.h"
 #include "commandline.h"
 #include <iostream>
 #include <string>
