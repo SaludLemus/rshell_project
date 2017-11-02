@@ -11,8 +11,6 @@ void Command::init(const string &user_input) {
 	deallocParser();
 	parse_cmd = new Parse();
 	
-	parse_cmd->str.setString(user_input); // set Tokenizer's buffer
-	
 	commandIterator(); // start parse
 	return;
 }
