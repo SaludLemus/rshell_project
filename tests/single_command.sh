@@ -3,4 +3,4 @@
 
 TEST1="ls -a"
 
-echo $TEST1 | ./bin/rshell.out
+echo $TEST1 | ./bin/rshell
