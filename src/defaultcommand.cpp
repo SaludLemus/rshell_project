@@ -31,11 +31,12 @@ void DefaultCommand::execute() {
 			++i;
 		}
 		string conv_to_str(cmd_to_execute);
-		
-		boost::tokenizer<> tok(conv_to_str); // parse string
+	
+		boost::char_separator<char> sep{" "};
+		boost::tokenizer<boost::char_separator<char>> tok{conv_to_str, sep};
 		char* argv[argument_size];
 		
-		for (boost::tokenizer<>::iterator itr = tok.begin(); itr != tok.end(); ++itr) { // build argv
+		for (boost::tokenizer<boost::char_separator<char>>::iterator itr = tok.begin(); itr != tok.end(); ++itr) { // build argv
 			string temp_str = *itr;
 			char* new_arg = new char[temp_str.size()];
 			for (unsigned int i = 0; i < temp_str.size(); ++i)
@@ -51,7 +52,8 @@ void DefaultCommand::execute() {
 			cout << "Error in execute()" << endl;
 			return;
 		}
-
+		//cout << argv[0] << endl;
+		//cout << argv[1] << endl;
 		return; // MAKE SURE SYS CALLS WORK
 		
 		child_pid = fork(); // create child process
