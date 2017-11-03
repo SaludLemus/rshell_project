@@ -3,6 +3,7 @@
 #include <sys/wait.h>
 #include <iostream>
 #include <string>
+#include <errno.h>
 #include <boost/tokenizer.hpp>
 using namespace std;
 
@@ -24,6 +25,8 @@ void DefaultCommand::execute() {
 		while (true) { // how many args
 			if (cmd_to_execute[i] == ' ')
 				++argument_size;
+			else if (cmd_to_execute[i] == '#') // treat everything afterwards as a comment
+				break;
 			else if (cmd_to_execute[i] == '\0') {
 				++argument_size;
 				break;
@@ -31,7 +34,10 @@ void DefaultCommand::execute() {
 			++i;
 		}
 		string conv_to_str(cmd_to_execute);
-	
+		
+		if (conv_to_str.find("#") != string::npos) // ignore everything to the right
+			conv_to_str = conv_to_str.substr(0, conv_to_str.find("#") - 1); // keep everything to the left
+		
 		boost::char_separator<char> sep{" "};
 		boost::tokenizer<boost::char_separator<char>> tok{conv_to_str, sep};
 		char* argv[argument_size];
@@ -44,7 +50,6 @@ void DefaultCommand::execute() {
 			argv[index] = new_arg;
 			++index;
 		}
-	
 		
 		if (index > 0)
 			argv[index] = NULL; // null term.
@@ -56,12 +61,12 @@ void DefaultCommand::execute() {
 		//cout << argv[1] << endl;
 		return; // MAKE SURE SYS CALLS WORK
 		
-		child_pid = fork(); // create child process
+		child_pid = fork(); // create child process fork() returns an integer (0 == child)
 		
 		if (child_pid == 0) { // child will run cmd
 			cmdSuccess = true;
 			
-			execvp(argv[0], argv);
+			execvp(argv[0], argv); // returns a negative value if failed to execute
 			
 			// if continues, then failed (unknown cmd)
 			
@@ -69,6 +74,8 @@ void DefaultCommand::execute() {
 			
 			cmdSuccess = false;
 		}
+		else if (child_pid == -1) // fork failed
+			perror("Fork() failed");
 		else { // parent has to wait for the child to be done
 			pid_t check_pid = waitpid(child_pid, &child_status, 0);
 			do {
