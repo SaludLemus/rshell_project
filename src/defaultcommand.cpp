@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <errno.h>
+#include <cstdlib>
 #include <boost/tokenizer.hpp>
 using namespace std;
 
@@ -13,9 +14,8 @@ DefaultCommand::DefaultCommand(CommandLine* new_cmd) : Connector(), exec_command
 
 void DefaultCommand::execute() {
 	if (checkExistence()) {
-			// do the sys calls here, if succeed set cmdSuccess to true, else false
-		pid_t child_pid;
-		int child_status;
+		pid_t child_pid; // for fork()
+		int child_status; // for waitpid()
 		
 		int index = 0; // for argv
 		int argument_size = 0;
@@ -38,7 +38,7 @@ void DefaultCommand::execute() {
 		if (conv_to_str.find("#") != string::npos) // ignore everything to the right
 			conv_to_str = conv_to_str.substr(0, conv_to_str.find("#") - 1); // keep everything to the left
 		
-		boost::char_separator<char> sep{" "};
+		boost::char_separator<char> sep{" "}; // separator
 		boost::tokenizer<boost::char_separator<char>> tok{conv_to_str, sep};
 		char* argv[argument_size];
 		
@@ -51,31 +51,30 @@ void DefaultCommand::execute() {
 			++index;
 		}
 		
-		if (index > 0)
-			argv[index] = NULL; // null term.
+		if (index > 0) // append null term.
+			argv[index] = NULL;
 		else {
 			cout << "Error in execute()" << endl;
 			return;
 		}
 		//cout << argv[0] << endl;
 		//cout << argv[1] << endl;
-		return; // MAKE SURE SYS CALLS WORK
+		//return; // MAKE SURE SYS CALLS WORK
 		
+		checkExit(argv[0]); // exit prog if exit exists
+		return;
 		child_pid = fork(); // create child process fork() returns an integer (0 == child)
 		
 		if (child_pid == 0) { // child will run cmd
 			cmdSuccess = true;
 			
-			execvp(argv[0], argv); // returns a negative value if failed to execute
-			
-			// if continues, then failed (unknown cmd)
-			
-			cout << "Unknown command." << endl;
-			
-			cmdSuccess = false;
+			if (execvp(argv[0], argv) < 0) {// returns a negative value if failed to execute
+				cmdSuccess = false;
+				perror("ERROR: Unknown command"); // error
+			}
 		}
 		else if (child_pid == -1) // fork failed
-			perror("Fork() failed");
+			perror("ERROR: Unable to fork a child process"); // error message
 		else { // parent has to wait for the child to be done
 			pid_t check_pid = waitpid(child_pid, &child_status, 0);
 			do {
@@ -103,4 +102,17 @@ CommandConnector DefaultCommand::getConnector() {
     
 char* DefaultCommand::getCMD() {
 	return exec_command->getCommand();	
+}
+
+void DefaultCommand::exitProg() {
+	exit(0);
+	return;
+}
+
+void DefaultCommand::checkExit(char* check_cmd) {
+	string exit_str(check_cmd);
+	
+	if (exit_str == "exit")
+		exitProg();
+	return;
 }

@@ -17,8 +17,10 @@ class DefaultCommand : public Connector {
 		CommandConnector getConnector();
 		bool checkStatus();
 		char* getCMD();
+		void exitProg();
 	private:
 		CommandLine* exec_command; // single command (leaf node)
+		void checkExit(char*);
 };
 
 #endif

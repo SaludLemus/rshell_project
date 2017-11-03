@@ -16,6 +16,7 @@ class Connector {
 		virtual bool checkStatus() = 0;
 		virtual char* getCMD() = 0;
 		virtual CommandConnector getConnector() = 0;
+		virtual void exitProg() = 0;
 	private:
 };
 
