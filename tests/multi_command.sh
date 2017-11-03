@@ -1,6 +1,6 @@
 #!/bin/bash
-#tests single commands
+#tests exit commands
 
-TEST1="mkdir -p DIR; cd ./DIR; pwd; cd ..; rm DIR"
+TEST1="exit"
 
 echo $TEST1 | ./bin/rshell
