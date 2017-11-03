@@ -33,9 +33,9 @@ void DefaultCommand::execute() {
 		string conv_to_str(cmd_to_execute);
 		
 		boost::tokenizer<> tok(conv_to_str); // parse string
-		char* argv[argument_size]; // cd a
+		char* argv[argument_size];
 		
-		for (boost::tokenizer<>::iterator itr = tok.begin(); itr != tok.end(); ++itr) {
+		for (boost::tokenizer<>::iterator itr = tok.begin(); itr != tok.end(); ++itr) { // build argv
 			string temp_str = *itr;
 			char* new_arg = new char[temp_str.size()];
 			for (unsigned int i = 0; i < temp_str.size(); ++i)
@@ -51,7 +51,9 @@ void DefaultCommand::execute() {
 			cout << "Error in execute()" << endl;
 			return;
 		}
-		return;
+
+		return; // MAKE SURE SYS CALLS WORK
+		
 		child_pid = fork(); // create child process
 		
 		if (child_pid == 0) { // child will run cmd
@@ -65,7 +67,7 @@ void DefaultCommand::execute() {
 			
 			cmdSuccess = false;
 		}
-		else { // parent has to wait for child to be done
+		else { // parent has to wait for the child to be done
 			pid_t check_pid = waitpid(child_pid, &child_status, 0);
 			do {
 				if (check_pid != child_pid) return; // need to fix
