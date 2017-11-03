@@ -1,6 +1,6 @@
 CC = g++
 CC_FLAGS = -Wall -Werror -ansi -pedantic
-EXEC = rshell.out
+EXEC = rshell
 
 SRCDIR = src
 OBJDIR = obj
@@ -17,8 +17,10 @@ $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@mkdir -p $(OBJDIR)
 	$(CC) -c $(CC_FLAGS) $< -o $@
 
+.PHONY: remove
+remove:
+	rm -r ./$(BINDIR)
+	
 .PHONY: clean
 clean:
-	rm -f $(OBJECTS)
-	rm $(BINDIR)/$(EXEC)
-	
+	rm -r ./$(OBJDIR)
