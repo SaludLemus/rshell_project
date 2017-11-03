@@ -7,7 +7,7 @@ class Connector {
 	public:
 		Connector() {cmdSuccess = false;}
 		Connector(bool success) : cmdSuccess(success) {}
-		~Connector() {}
+		virtual ~Connector() {}
 	protected:
 		bool cmdSuccess; // true if cmd worked, else false (for && and ||)
 	public:

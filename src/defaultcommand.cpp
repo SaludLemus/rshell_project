@@ -102,7 +102,9 @@ bool DefaultCommand::checkStatus() {
 }
 
 CommandConnector DefaultCommand::getConnector() {
-	if (checkExistence()) return exec_command->getConnector();
+	if (checkExistence()) 
+		return exec_command->getConnector();
+	return exitCC;
 }
     
 char* DefaultCommand::getCMD() {
