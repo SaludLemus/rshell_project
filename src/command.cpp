@@ -18,7 +18,7 @@ void Command::init(const string &user_input) {
 void Command::commandIterator() {
 	deallocCMDList();
 	CommandLine* current_command = parse_cmd->nextParse();
-	CommandLine* prev_command = 0; // for connectors
+	//CommandLine* prev_command = 0; // for connectors
 	
 	while (true) {// create commands from user's input
 		cmd_list.push_back(current_command);
@@ -28,8 +28,7 @@ void Command::commandIterator() {
 			exit();
 		}
 		
-		
-		prev_command = current_command;
+		//prev_command = current_command;
 		current_command = parse_cmd->nextParse(); // get next command
 	}
 	// loop through the list and execute command or exit
@@ -39,7 +38,7 @@ void Command::commandIterator() {
 }
 
 void Command::exit() {
-	exit(0); // end program
+	//exit(0); // end program
 	return;
 }
 
@@ -51,7 +50,7 @@ void Command::deallocParser() {
 
 
 void Command::deallocCMDList() {
-	for (list<CommandLine*>::iterator itr = cmd_list.begin(); itr !+ cmd_list.end(); ++itr)
+	for (list<CommandLine*>::iterator itr = cmd_list.begin(); itr != cmd_list.end(); ++itr)
 		delete (*itr);
 	return;
 }

@@ -10,12 +10,12 @@ using namespace std;
 
 class Command {
    public:
+      Command();
+		~Command();
       void init(const string &);
    private:
-		Command();
-		~Command();
-      Parse* parse_cmd;
-      List<CommandLine*> cmd_list;
+      Parser* parse_cmd;
+      list<CommandLine*> cmd_list;
       void commandIterator(); // will call exit() if "exit" exists or end of parse is reached
       void exit();
       void deallocParser();
