@@ -62,7 +62,7 @@ void DefaultCommand::execute() {
 		//return; // MAKE SURE SYS CALLS WORK
 		
 		checkExit(argv[0]); // exit prog if exit exists
-		return;
+
 		child_pid = fork(); // create child process fork() returns an integer (0 == child)
 		
 		if (child_pid == 0) { // child will run cmd
@@ -73,12 +73,17 @@ void DefaultCommand::execute() {
 				perror("ERROR: Unknown command"); // error
 			}
 		}
+		
 		else if (child_pid == -1) // fork failed
 			perror("ERROR: Unable to fork a child process"); // error message
+			
 		else { // parent has to wait for the child to be done
 			pid_t check_pid = waitpid(child_pid, &child_status, 0);
 			do {
-				if (check_pid != child_pid) return; // need to fix
+				//if (check_pid != child_pid) return; // need to fix
+				if (errno == EINTR) // will set errno to EINTR if waitpid returns -1
+					perror("ERROR: Function was interrupted");
+					
 			} while(check_pid != child_pid);
 			return; // return child_status;
 		}
