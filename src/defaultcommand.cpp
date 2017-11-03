@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <errno.h>
+#include <stdio.h>
 #include <cstdlib>
 #include <boost/tokenizer.hpp>
 using namespace std;
@@ -18,7 +19,7 @@ void DefaultCommand::execute() {
 		int child_status; // for waitpid()
 		
 		int index = 0; // for argv
-		int argument_size = 0;
+		unsigned int argument_size = 0;
 		int i = 0; // find number of args
 		
 		char* cmd_to_execute = exec_command->getCommand();
@@ -38,11 +39,11 @@ void DefaultCommand::execute() {
 		if (conv_to_str.find("#") != string::npos) // ignore everything to the right
 			conv_to_str = conv_to_str.substr(0, conv_to_str.find("#") - 1); // keep everything to the left
 		
-		boost::char_separator<char> sep{" "}; // separator
-		boost::tokenizer<boost::char_separator<char>> tok{conv_to_str, sep};
-		char* argv[argument_size];
+		boost::char_separator<char> sep(" "); // separator
+		boost::tokenizer<boost::char_separator<char> > tok(conv_to_str, sep);
+		char** argv = new char*[argument_size];
 		
-		for (boost::tokenizer<boost::char_separator<char>>::iterator itr = tok.begin(); itr != tok.end(); ++itr) { // build argv
+		for (boost::tokenizer<boost::char_separator<char> >::iterator itr = tok.begin(); itr != tok.end(); ++itr) { // build argv
 			string temp_str = *itr;
 			char* new_arg = new char[temp_str.size()];
 			for (unsigned int i = 0; i < temp_str.size(); ++i)
@@ -85,6 +86,7 @@ void DefaultCommand::execute() {
 					perror("ERROR: Function was interrupted");
 					
 			} while(check_pid != child_pid);
+			delete[] argv;
 			return; // return child_status;
 		}
 			
