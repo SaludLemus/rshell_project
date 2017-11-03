@@ -17,12 +17,14 @@ void DefaultCommand::execute() {
 	if (checkExistence()) {
 		pid_t child_pid; // for fork()
 		int child_status; // for waitpid()
+		char* cmd_to_execute = 0;
+		char** argv = 0;
 		
 		int index = 0; // for argv
 		unsigned int argument_size = 0;
 		int i = 0; // find number of args
 		
-		char* cmd_to_execute = exec_command->getCommand();
+		cmd_to_execute = exec_command->getCommand();
 		while (true) { // how many args
 			if (cmd_to_execute[i] == ' ')
 				++argument_size;
@@ -41,7 +43,7 @@ void DefaultCommand::execute() {
 		
 		boost::char_separator<char> sep(" "); // separator
 		boost::tokenizer<boost::char_separator<char> > tok(conv_to_str, sep);
-		char** argv = new char*[argument_size];
+		argv = new char*[sizeof(char*) * argument_size];
 		
 		for (boost::tokenizer<boost::char_separator<char> >::iterator itr = tok.begin(); itr != tok.end(); ++itr) { // build argv
 			string temp_str = *itr;
@@ -56,6 +58,8 @@ void DefaultCommand::execute() {
 			argv[index] = NULL;
 		else {
 			cout << "Error in execute()" << endl;
+			if (argv)
+				delete[] argv;
 			return;
 		}
 		//cout << argv[0] << endl;
@@ -86,10 +90,10 @@ void DefaultCommand::execute() {
 					perror("ERROR: Function was interrupted");
 					
 			} while(check_pid != child_pid);
-			delete[] argv;
-			return; // return child_status;
+			//return; // return child_status;
 		}
-			
+		if (argv)
+			delete[] argv;
 	}
 	return;
 }

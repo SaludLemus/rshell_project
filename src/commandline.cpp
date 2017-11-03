@@ -17,7 +17,9 @@ CommandLine::CommandLine(char* _command, CommandConnector _connector): command(_
 }
     
 CommandLine::~CommandLine(){
-    delete[] command;
+	if (command)
+		delete[] command;
+	command = 0;
     return;
 }
     

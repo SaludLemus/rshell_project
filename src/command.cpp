@@ -55,6 +55,7 @@ void Command::commandIterator() {
 void Command::deallocParser() {
 	if (parse_cmd)
 		delete parse_cmd;
+	parse_cmd = 0;
 	return;
 }
 
