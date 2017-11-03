@@ -1,5 +1,5 @@
-CC = g++
-CC_FLAGS = -std=gnu++11 -Wall -Werror -ansi -pedantic
+CXX = g++
+CXXFLAGS = -std=c++11 -c -Wall -Werror -ansi -pedantic
 EXEC = rshell
 
 SRCDIR = src
@@ -11,11 +11,11 @@ OBJECTS := $(SOURCES:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
 
 $(BINDIR)/$(EXEC): $(OBJECTS)
 	@mkdir -p $(BINDIR)
-	$(CC) $(OBJECTS) -o $@
+	$(CXX) $(OBJECTS) -o $@
 
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp
 	@mkdir -p $(OBJDIR)
-	$(CC) -c $(CC_FLAGS) $< -o $@
+	$(CXX) $(CXXFLAGS) $< -o $@
 
 .PHONY: remove
 remove:
