@@ -3,11 +3,11 @@
 
 TEST1="pwd; ls -a"
 TEST2="echo These lines; echo should work; echo without problem"
-TEST3="echo hello world && echo how are you doing; echo I'm doing great"
-TEST4="echo hello world || echo how are you doing; echo I'm doing great"
-TEST5="echo hello world && echo how are you doing && echo I'm doing great"
-TEST6="echo hello world && FAILCOMMAND how are you doing && echo I'm doing great"
-TEST7="echo hello world || FAILCOMMAND how are you doing && echo I'm doing great"
+TEST3="echo Likewise these && lines have; echo no issues"
+TEST4="echo The next command will not execute || echo JK, program is broke; echo See?"
+TEST5="echo However, these && echo have no problem && echo as they are all valid"
+TEST6="echo The next command will fail; FAILCOMMAND && echo JK, program is broke"
+TEST7="echo The next command will fail; FAILCOMMAND how are you doing || echo But this time, I'm fine"
 
 echo "Test 1: $TEST1"
 echo -e $TEST1 | ./bin/rshell
