@@ -1,12 +1,13 @@
+
 #include "defaultcommand.h"
 #include <unistd.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <iostream>
 #include <string>
 #include <errno.h>
 #include <stdio.h>
 #include <cstdlib>
-#include <boost/tokenizer.hpp>
 using namespace std;
 
 DefaultCommand::DefaultCommand() : Connector(), exec_command(0) {}
@@ -23,32 +24,44 @@ void DefaultCommand::execute() {
 		char** argv = exec_command->getCommand();
 		
 		checkExit(argv[0]); // exit prog if exit exists
-
+		cmdSuccess = true;
 		child_pid = fork(); // create child process fork() returns an integer (0 == child)
 		
 		if (child_pid == 0) { // child will run cmd
-			cmdSuccess = true;
-			
+		
 			if (execvp(argv[0], argv) < 0) {// returns a negative value if failed to execute
 				cmdSuccess = false;
 				perror("ERROR: Unknown command"); // error
+				exit(EXIT_FAILURE);
 			}
 		}
 		
-		else if (child_pid == -1) // fork failed
+		else if (child_pid == -1) {// fork failed
+			cmdSuccess = false;
 			perror("ERROR: Unable to fork a child process"); // error message
-			
+			exit(EXIT_FAILURE);
+		}
 		else { // parent has to wait for the child to be done
 			pid_t check_pid = waitpid(child_pid, &child_status, 0);
 			do {
-				//if (check_pid != child_pid) return; // need to fix
-				if (errno == EINTR) // will set errno to EINTR if waitpid returns -1
+				
+				if (errno == EINTR) {// will set errno to EINTR if waitpid returns -1
+					cmdSuccess = false;
 					perror("ERROR: Function was interrupted");
+					exit(EXIT_FAILURE);
+				}
+				else if (WIFEXITED(child_status)) { // child process did not execute
+					if (WEXITSTATUS(child_status) == EXIT_FAILURE) {
+					cmdSuccess = false;
+					}
+				}
 					
 			} while(check_pid != child_pid);
-			//return; // return child_status;
 		}
+		//if (argv)
+			//delete[] argv;
 	}
+	
 	return;
 }
 
