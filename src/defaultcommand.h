@@ -17,7 +17,7 @@ class DefaultCommand : public Connector {
 		bool checkExistence();
 		CommandConnector getConnector();
 		bool checkStatus();
-		char* getCMD();
+		char** getCMD();
 		void exitProg();
 	private:
 		CommandLine* exec_command; // single command (leaf node)

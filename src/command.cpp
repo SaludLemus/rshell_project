@@ -22,7 +22,7 @@ void Command::commandIterator() {
 	// use parse_cmd
 	do {
 		new_cmd = parse_cmd->nextParse(); // get command
-		new_cmd->display();
+		//new_cmd->display();
 		cmd_list.push_back(new DefaultCommand(new_cmd));
 
 		if (cmd_list.at(cmd_list.size() - 1)->getConnector() == 0)

@@ -14,57 +14,13 @@ DefaultCommand::DefaultCommand() : Connector(), exec_command(0) {}
 DefaultCommand::DefaultCommand(CommandLine* new_cmd) : Connector(), exec_command(new_cmd) {}
 
 void DefaultCommand::execute() {
+	if (exec_command == 0)
+		return;
+	
 	if (checkExistence()) {
 		pid_t child_pid; // for fork()
 		int child_status; // for waitpid()
-		char* cmd_to_execute = 0;
-		char** argv = 0;
-		
-		int index = 0; // for argv
-		unsigned int argument_size = 0;
-		int i = 0; // find number of args
-		
-		cmd_to_execute = exec_command->getCommand();
-		while (true) { // how many args
-			if (cmd_to_execute[i] == ' ')
-				++argument_size;
-			else if (cmd_to_execute[i] == '#') // treat everything afterwards as a comment
-				break;
-			else if (cmd_to_execute[i] == '\0') {
-				++argument_size;
-				break;
-			}
-			++i;
-		}
-		string conv_to_str(cmd_to_execute);
-		
-		if (conv_to_str.find("#") != string::npos) // ignore everything to the right
-			conv_to_str = conv_to_str.substr(0, conv_to_str.find("#") - 1); // keep everything to the left
-		
-		boost::char_separator<char> sep(" "); // separator
-		boost::tokenizer<boost::char_separator<char> > tok(conv_to_str, sep);
-		argv = new char*[sizeof(char*) * argument_size];
-		
-		for (boost::tokenizer<boost::char_separator<char> >::iterator itr = tok.begin(); itr != tok.end(); ++itr) { // build argv
-			string temp_str = *itr;
-			char* new_arg = new char[temp_str.size()];
-			for (unsigned int i = 0; i < temp_str.size(); ++i)
-				new_arg[i] = temp_str.at(i);
-			argv[index] = new_arg;
-			++index;
-		}
-		
-		if (index > 0) // append null term.
-			argv[index] = NULL;
-		else {
-			cout << "Error in execute()" << endl;
-			if (argv)
-				delete[] argv;
-			return;
-		}
-		//cout << argv[0] << endl;
-		//cout << argv[1] << endl;
-		//return; // MAKE SURE SYS CALLS WORK
+		char** argv = exec_command->getCommand();
 		
 		checkExit(argv[0]); // exit prog if exit exists
 
@@ -113,7 +69,7 @@ CommandConnector DefaultCommand::getConnector() {
 	return exitCC;
 }
     
-char* DefaultCommand::getCMD() {
+char** DefaultCommand::getCMD() {
 	return exec_command->getCommand();	
 }
 

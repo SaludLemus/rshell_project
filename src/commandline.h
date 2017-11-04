@@ -6,18 +6,16 @@ enum CommandConnector{exitCC, continueCC, andCC, orCC};
 
 class CommandLine {
     private:
-        char* command;
-        char** parameters;
+        char** command;
         CommandConnector connector;
         unsigned parameterSize;
     
     public:
         CommandLine();
-        CommandLine(char* _command, char* _parameters[], unsigned parameterSize, CommandConnector _connector);
+        CommandLine(char** _command, unsigned parameterSize, CommandConnector _connector);
         ~CommandLine();
     
-        char* getCommand();
-        char** getParameters();
+        char** getCommand();
         CommandConnector getConnector();
         
         void display();
