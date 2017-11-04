@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <boost/tokenizer.hpp>
+
 using namespace std;
 
 DefaultCommand::DefaultCommand() : Connector(), exec_command(0) {}
@@ -37,20 +38,25 @@ void DefaultCommand::execute() {
 			++i;
 		}
 		string conv_to_str(cmd_to_execute);
-		
+		//cout << "IN EXECUTE: " << conv_to_str << endl;
 		if (conv_to_str.find("#") != string::npos) // ignore everything to the right
 			conv_to_str = conv_to_str.substr(0, conv_to_str.find("#") - 1); // keep everything to the left
 		
 		boost::char_separator<char> sep(" "); // separator
 		boost::tokenizer<boost::char_separator<char> > tok(conv_to_str, sep);
+		//cout << sizeof(char*) * argument_size << endl;
 		argv = new char*[sizeof(char*) * argument_size];
 		
 		for (boost::tokenizer<boost::char_separator<char> >::iterator itr = tok.begin(); itr != tok.end(); ++itr) { // build argv
 			string temp_str = *itr;
-			char* new_arg = new char[temp_str.size()];
+		//	cout << "Sub word: " << temp_str << "; Size: " << temp_str.size() << endl;
+		//	cout << "Size of a char: " << sizeof(char) << endl;
+			char* new_arg = new char[temp_str.size() + 1];
 			for (unsigned int i = 0; i < temp_str.size(); ++i)
 				new_arg[i] = temp_str.at(i);
+			new_arg[temp_str.size()] = '\0';
 			argv[index] = new_arg;
+			//cout << "Result after copying from string: " << new_arg << endl;
 			++index;
 		}
 		
