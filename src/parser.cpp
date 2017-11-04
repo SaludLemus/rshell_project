@@ -127,8 +127,12 @@ CommandLine* Parser::nextParse() {
 		}
 	}	
 	
+	// Create Parameter array
+	char** parameters = NULL;
+	if (parameterSize > 0)
+		parameters = new char*[parameterSize];
+		
 	// Fill Parameter with char*'s
-	char** parameters = new char*[parameterSize];
 	size_t parsedendposition = initalposition;
 	for(int i = 0; i < parameterSize; i++){
 		initalposition = parsedendposition;
