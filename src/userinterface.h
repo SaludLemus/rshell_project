@@ -3,6 +3,7 @@
 
 class UserInterface {
    public:
+      virtual ~UserInterface() {return;}
       virtual bool setCommand() = 0; // will set the parser's data member
 };
 

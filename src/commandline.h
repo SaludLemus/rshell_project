@@ -2,20 +2,22 @@
 #define __COMMANDLINE_H__
 #include <cstring>
 
-enum CommandConnector{exitCC, next, success, fail};
+enum CommandConnector{exitCC, continueCC, andCC, orCC};
 
-class CommandLine{
+class CommandLine {
     private:
-        const char* command;
+        char** command;
         CommandConnector connector;
+        unsigned parameterSize;
     
     public:
         CommandLine();
-        CommandLine(const char* _command, CommandConnector _connector);
+        CommandLine(char** _command, unsigned parameterSize, CommandConnector _connector);
         ~CommandLine();
     
-        const char* getCommand();
+        char** getCommand();
         CommandConnector getConnector();
+
         void display();
 };
 

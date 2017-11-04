@@ -6,8 +6,9 @@ using namespace std;
 User::User() : cmd_controller(0) {}
 
 User::~User() {
-  if (cmd_controller) // ensure proper deallocation
+	if (cmd_controller) // ensure proper deallocation
       delete cmd_controller;
+   cmd_controller = 0;
 }
 
 bool User::setCommand() {
@@ -16,7 +17,7 @@ bool User::setCommand() {
    cout << "$ ";
    getline(cin, user_input); // ask user for input
    
-  if (cmd_controller) // dealloc. old command
+	if (cmd_controller) // dealloc. old command
 		delete cmd_controller;
  
 	cmd_controller = new Command();

@@ -3,23 +3,25 @@
 
 #include "parser.h"
 #include "commandline.h"
+#include "connector.h"
+#include "defaultcommand.h"
 #include <iostream>
 #include <string>
-#include <list>
+#include <vector>
 using namespace std;
 
 class Command {
    public:
-      Command();
+		Command();
 		~Command();
       void init(const string &);
    private:
       Parser* parse_cmd;
-      list<CommandLine*> cmd_list;
+      vector<Connector*> cmd_list;
       void commandIterator(); // will call exit() if "exit" exists or end of parse is reached
-      void exit();
       void deallocParser();
       void deallocCMDList();
+      void exitProg();
 };
 
 #endif

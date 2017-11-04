@@ -1,12 +1,12 @@
 #!/bin/bash
 #tests multi commands
 
-TEST1="pwd #display directory"
-TEST2="ls # -a"
-TEST3="ls -a #; pwd"
-TEST4="ls -a; pwd # || && ; echo ; sd"
-TEST5="echo hello world && FAILCOMMAND how are you doing && echo I'm #doing great"
-TEST6="#Just a comment"
+TEST1="exit"
+TEST2="ls -a; exit"
+TEST3="ls -a && exit"
+TEST4="FAILCOMMAND -a || exit"
+TEST5="echo "exit""
+TEST6="echo sup fam; echo sup back #exit"
 
 echo -e "Test 1: $TEST1"
 echo -e $TEST1 | ./bin/rshell
