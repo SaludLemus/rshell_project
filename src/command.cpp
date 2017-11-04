@@ -28,8 +28,6 @@ void Command::commandIterator() {
 			break;
 	} while (cmd_list.size() != 0 && cmd_list.at(cmd_list.size() - 1)->getConnector() != 0); // continue parsing until last command is reached or no input is entered
 	
-	//cout << cmd_list.at(0)->getCMD() << endl;
-	//cout << cmd_list.at(1)->getCMD() << endl;
 	for (unsigned int i = 0; i < cmd_list.size(); ++i) { // iterate through each cmd
 		if (cmd_list.at(i)->getConnector() == 0) { // exitCC
 			cmd_list.at(i)->execute();
@@ -39,6 +37,8 @@ void Command::commandIterator() {
 			cmd_list.at(i)->execute();
 		else if (cmd_list.at(i)->getConnector() == 2) {// andCC
 			cmd_list.at(i)->execute();
+			cout << cmd_list.at(i)->getCMD() << endl;
+			cout << cmd_list.at(i)->checkStatus() << endl;
 			if (cmd_list.at(i)->checkStatus() == false) // skip next cmd
 				++i;
 		}
@@ -47,7 +47,6 @@ void Command::commandIterator() {
 			if (cmd_list.at(i)->checkStatus() == true) // skip next cmd
 				++i;
 		}
-		// cout << cmd_list.at(i)->getCMD() << endl; // null term.
 	}
 	
 	return;

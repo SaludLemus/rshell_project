@@ -38,25 +38,20 @@ void DefaultCommand::execute() {
 			++i;
 		}
 		string conv_to_str(cmd_to_execute);
-		//cout << "IN EXECUTE: " << conv_to_str << endl;
 		if (conv_to_str.find("#") != string::npos) // ignore everything to the right
 			conv_to_str = conv_to_str.substr(0, conv_to_str.find("#") - 1); // keep everything to the left
 		
 		boost::char_separator<char> sep(" "); // separator
 		boost::tokenizer<boost::char_separator<char> > tok(conv_to_str, sep);
-		//cout << sizeof(char*) * argument_size << endl;
 		argv = new char*[sizeof(char*) * argument_size];
 		
 		for (boost::tokenizer<boost::char_separator<char> >::iterator itr = tok.begin(); itr != tok.end(); ++itr) { // build argv
 			string temp_str = *itr;
-		//	cout << "Sub word: " << temp_str << "; Size: " << temp_str.size() << endl;
-		//	cout << "Size of a char: " << sizeof(char) << endl;
 			char* new_arg = new char[temp_str.size() + 1];
 			for (unsigned int i = 0; i < temp_str.size(); ++i)
 				new_arg[i] = temp_str.at(i);
 			new_arg[temp_str.size()] = '\0';
 			argv[index] = new_arg;
-			//cout << "Result after copying from string: " << new_arg << endl;
 			++index;
 		}
 		
@@ -68,35 +63,33 @@ void DefaultCommand::execute() {
 				delete[] argv;
 			return;
 		}
-		//cout << argv[0] << endl;
-		//cout << argv[1] << endl;
-		//return; // MAKE SURE SYS CALLS WORK
 		
 		checkExit(argv[0]); // exit prog if exit exists
 
+		cmdSuccess = true; // will be false if perror executes
 		child_pid = fork(); // create child process fork() returns an integer (0 == child)
 		
 		if (child_pid == 0) { // child will run cmd
-			cmdSuccess = true;
-			
-			if (execvp(argv[0], argv) < 0) {// returns a negative value if failed to execute
-				cmdSuccess = false;
+			if (execvp(argv[0], argv) < 0) { // returns a negative value if failed to execute
+				cmdSuccess = false; // (&& and ||)
 				perror("ERROR: Unknown command"); // error
 			}
 		}
 		
-		else if (child_pid == -1) // fork failed
+		else if (child_pid == -1) {// fork failed
+			cmdSuccess = false; // (&& and ||)
 			perror("ERROR: Unable to fork a child process"); // error message
+		}
 			
 		else { // parent has to wait for the child to be done
 			pid_t check_pid = waitpid(child_pid, &child_status, 0);
 			do {
-				//if (check_pid != child_pid) return; // need to fix
-				if (errno == EINTR) // will set errno to EINTR if waitpid returns -1
+				if (errno == EINTR) {// will set errno to EINTR if waitpid returns -1
+					cmdSuccess = false; // set to false (&& and ||)
 					perror("ERROR: Function was interrupted");
+				}
 					
 			} while(check_pid != child_pid);
-			//return; // return child_status;
 		}
 		if (argv)
 			delete[] argv;
