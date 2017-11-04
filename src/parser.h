@@ -14,7 +14,6 @@ class Parser {
 		Parser(const string & user_input);
 		CommandLine* nextParse(); // permit access to command class
 	private:
-		void removeLastChar();
 		int checkConnectorForParameters(size_t &, size_t &, int &);
 		void returnEndForParameters(size_t &, size_t &);
 		int checkConnectorForCommand(size_t &, size_t &);

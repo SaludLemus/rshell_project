@@ -15,46 +15,67 @@ Parser::Parser(const string &user_input) {
 	return;
 }
 
-void Parser::removeLastChar() {
-	
-	return;
-}
-
+// Updates the backtrackpostion and endposition. 
+// Returns the int value of connector's enum value.
 int Parser::checkConnectorForCommand(size_t & endposition, size_t & backtrackposition){
+	
+	// Check for comments
+	if (str[backtrackposition] == '#'){
+		endposition = str.length();
+		return 0;
+	}
+	
+	// Check for end
 	if (endposition == string::npos){
 		backtrackposition = str.length();
 		return 0;
 	}
 	
+	// Check for ; in end
 	if (str[endposition - 1] == ';'){
 		backtrackposition -= 1;
 		return 1;
 	}
 	
+	backtrackposition = endposition;
 	endposition++;
 
 	return -1;
 }
 
-// detects if the parsed phrase is the last. returns the enum value if it is the last.
+// Updates the backtrackpostion, endposition, and parameter size. 
+// Returns the int value of connector's enum value.
 int Parser::checkConnectorForParameters(size_t & endposition, size_t & backtrackposition, int & parameterSize) {
 	
+	// Check for comments
+	if (str[backtrackposition] == '#'){
+		backtrackposition -= 2;
+		endposition = str.length();
+		return 0;
+	}
+	
+	// Check for end of program
 	if (endposition == string::npos){
 		backtrackposition = str.length();
 		parameterSize++;
 		return 0; // endCC
 	}
 		
+	// Check for ; in end
 	if(str[endposition - 1] == ';'){
 		backtrackposition = endposition - 1;
 		parameterSize++;
 		return 1; // continueCC
 	}
+	
+	// Check for an alone &&
 	if(str.string::substr(backtrackposition, 2) == "&&"){
 		backtrackposition = endposition - 3;
 		return 2; // andCC
 	}
 		
+		
+	// Check for an alone ||
 	if(str.string::substr(backtrackposition, 2) == "||"){
 		backtrackposition = endposition - 3;
 		return 3; // orCC
@@ -66,6 +87,7 @@ int Parser::checkConnectorForParameters(size_t & endposition, size_t & backtrack
 	return -1;
 }
 
+// Updates the backtrackpostion and endposition
 void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposition) {
 	
 	if (endposition == string::npos){
@@ -82,13 +104,15 @@ void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposi
 	endposition++;
 }
 
+// Returns a CommandLine* based on a parsed string within the class
 CommandLine* Parser::nextParse() {
+	// Return an exit if program parses nothing
 	if (position == str.length())
-			return 0;
+			return new CommandLine(stringToCharStar(""), new char*[0], 0, exitCC);
 	
 	// Get Command
 	size_t endposition = str.string::find(" ", position); // returns string::npos if not found
-	size_t backtrackposition = endposition;
+	size_t backtrackposition = position;
 	int connector = checkConnectorForCommand(endposition, backtrackposition);
 	char* command = stringToCharStar(str.string::substr(position, backtrackposition - position));
 	
@@ -105,12 +129,12 @@ CommandLine* Parser::nextParse() {
 	
 	// Fill Parameter with char*'s
 	char** parameters = new char*[parameterSize];
-	endposition = initalposition;
+	size_t parsedendposition = initalposition;
 	for(int i = 0; i < parameterSize; i++){
-		initalposition = endposition;
-		backtrackposition = endposition;
-		endposition = str.string::find(" ", endposition); // returns string::npos if not found
-		returnEndForParameters(endposition, backtrackposition);
+		initalposition = parsedendposition;
+		backtrackposition = parsedendposition;
+		parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
+		returnEndForParameters(parsedendposition, backtrackposition);
 		parameters[i] = stringToCharStar(str.string::substr(initalposition, backtrackposition - initalposition));
 	}
 	
@@ -119,13 +143,12 @@ CommandLine* Parser::nextParse() {
 	// Update position for next parse
 	if (endposition == str.length())
 		position = str.length();
-	else if (connector >= 2)
-		position = endposition + 3;
 	else position = endposition + 1;
 	
 	return CL;
 }
 
+// returns the char* equivalent of a string
 char* Parser::stringToCharStar(const string & STR){
 	char* cstr = new char[STR.length() + 1];
 	strcpy(cstr, STR.c_str());

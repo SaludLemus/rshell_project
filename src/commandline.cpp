@@ -36,8 +36,9 @@ CommandConnector CommandLine::getConnector() {
     return connector;
 }
 
+// Test function
 void CommandLine::display(){
-	std::cout << command << "|";
+	std::cout << command << "|" << parameterSize << "|";
 	for(unsigned i = 0; i < parameterSize; i++)
 		std::cout << parameters[i] << " ";
 	std::cout << "|" << connector << std::endl;
