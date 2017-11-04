@@ -9,9 +9,9 @@ class DefaultCommand : public Connector {
 		DefaultCommand();
 		DefaultCommand(CommandLine* new_cmd = 0);
 		~DefaultCommand() {
-			if (exec_command)
+			if (exec_command) {
 				delete exec_command;
-				exec_command = 0;
+			}
 		}
 		void execute();
 		bool checkExistence();
