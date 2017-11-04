@@ -2,7 +2,9 @@
 
 int main(){
     User* rshell = new User();
-    rshell->setCommand();
+    while(true){
+        rshell->setCommand();
+    }
     
     return 0;
 }
