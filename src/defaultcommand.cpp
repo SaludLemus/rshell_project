@@ -48,8 +48,6 @@ void DefaultCommand::execute() {
 			} while(check_pid != child_pid);
 			//return; // return child_status;
 		}
-		if (argv)
-			delete[] argv;
 	}
 	return;
 }
