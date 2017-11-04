@@ -27,12 +27,14 @@ will attempt to create the directory bin and will only execute the echo command 
     
 will attempt to create the directory bin; however, the echo will only execute if the previous command failed.
 
-There is no limit to the number of commands that be chained using these and any other operators.
+There is no limit to the number of commands that be chained using these and any other connectors.
 
 <h3 id="Commenting">Commenting</h3>
 Documentation is very important, so you are able to add comments into your command lines.
 
+    These are same!
     $ mkdir test; rm ./test #Testing mkdir and rm; echo hello
+    $ mkdir test; rm ./test
     
 Everything after the '#' will not be included in the arguments and such, will not interfere with your executables.
 
