@@ -49,9 +49,7 @@ void DefaultCommand::execute() {
 					perror("ERROR: Function was interrupted");
 					exit(EXIT_FAILURE);
 				}
-				else if (check_pid == 0)
-					cmdSuccess = false;
-				else if (WIFEXITED(child_status)) {
+				else if (WIFEXITED(child_status)) { // child process did not execute
 					if (WEXITSTATUS(child_status) == EXIT_FAILURE) {
 					cmdSuccess = false;
 					}
