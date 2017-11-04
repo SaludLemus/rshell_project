@@ -31,7 +31,7 @@ void Command::commandIterator() {
 		//cmd_list.at(i)->display();
 	
 		if (cmd_list.at(i)->getConnector() == 0) { // exitCC
-			
+			cmd_list.at(i)->execute();
 		}
 		else if (cmd_list.at(i)->getConnector() == 1) // continueCC
 			cmd_list.at(i)->execute();
