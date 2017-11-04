@@ -3,7 +3,7 @@
 int main(){
     User* rshell = new User();
     
-    while(rshell->setCommand()){}
+    rshell->setCommand();
 
     delete rshell;
     

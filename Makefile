@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++11 -c -Wall -Werror -ansi -pedantic
+CXXFLAGS = -c -Wall -Werror -ansi -pedantic
 EXEC = rshell
 
 SRCDIR = src
