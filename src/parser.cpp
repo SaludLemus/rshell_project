@@ -22,7 +22,8 @@ int Parser::checkConnectorforSize(size_t & endposition, size_t & backtrackpositi
 	
 	// Check for comments
 	if (str[backtrackposition] == '#'){
-		backtrackposition -= 2;
+		if (backtrackposition != 0)
+			backtrackposition -= 2;
 		endposition = str.length();
 		return 0;
 	}
@@ -80,7 +81,7 @@ void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposi
 // Returns a CommandLine* based on a parsed string within the class
 CommandLine* Parser::nextParse() {
 	// Return an exit if program parses nothing
-	if (position == str.length())
+	if (position == str.length() || str[position] == '#')
 			return NULL;
 	
 	// Get command size
