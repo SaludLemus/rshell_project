@@ -1,13 +1,13 @@
 #!/bin/bash
 #tests single commands
 
-TEST1="ls -a"
-TEST2="echo hello"
-TEST3="echo hello world"
+TEST1="pwd"
+TEST2="ls -a"
+TEST3="echo "||""
 TEST4="echo hello world ! ! ! !"
-TEST5='\n'
-TEST6="pwd"
-TEST7="FAILCOMMAND"
+TEST5="\n"
+TEST6="FAILCOMMAND"
+TEST7="FAILCOMMAND FAILPARAMETER"
 
 echo -e $TEST1 | ./bin/rshell
 echo -e $TEST2 | ./bin/rshell
