@@ -1,4 +1,5 @@
 #include "commandline.h"
+#include <iostream>
 
 CommandLine::CommandLine() { // "exit"
 	 command = new char[5];
@@ -11,15 +12,15 @@ CommandLine::CommandLine() { // "exit"
     return;
 }
 
-CommandLine::CommandLine(char* _command, CommandConnector _connector): command(_command){
+CommandLine::CommandLine(char* _command, char* _parameters[], unsigned _parameterSize, CommandConnector _connector) : command(_command), parameters(_parameters){
+    parameterSize = _parameterSize;
     connector = _connector;
     return;
 }
     
 CommandLine::~CommandLine(){
-	if (command)
-		delete[] command;
-	command = 0;
+	delete command;
+	delete[] parameters;
     return;
 }
     
@@ -27,6 +28,17 @@ char* CommandLine::getCommand() {
     return command;
 }
 
+char** CommandLine::getParameters(){
+	return parameters;
+}
+
 CommandConnector CommandLine::getConnector() {
     return connector;
+}
+
+void CommandLine::display(){
+	std::cout << command << "|";
+	for(unsigned i = 0; i < parameterSize; i++)
+		std::cout << parameters[i] << " ";
+	std::cout << "|" << connector << std::endl;
 }

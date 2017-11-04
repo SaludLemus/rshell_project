@@ -22,6 +22,7 @@ void Command::commandIterator() {
 	// use parse_cmd
 	do {
 		new_cmd = parse_cmd->nextParse(); // get command
+		new_cmd->display();
 		cmd_list.push_back(new DefaultCommand(new_cmd));
 
 		if (cmd_list.at(cmd_list.size() - 1)->getConnector() == 0)
@@ -30,6 +31,8 @@ void Command::commandIterator() {
 	
 	//cout << cmd_list.at(0)->getCMD() << endl;
 	for (unsigned int i = 0; i < cmd_list.size(); ++i) { // iterate through each cmd
+		//cmd_list.at(i)->display();
+	
 		if (cmd_list.at(i)->getConnector() == 0) { // exitCC
 			cmd_list.at(i)->execute();
 			exitProg();

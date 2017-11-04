@@ -15,7 +15,10 @@ class Parser {
 		CommandLine* nextParse(); // permit access to command class
 	private:
 		void removeLastChar();
-		int ifLast(size_t &, size_t &);
+		int checkConnectorForParameters(size_t &, size_t &, int &);
+		void returnEndForParameters(size_t &, size_t &);
+		int checkConnectorForCommand(size_t &, size_t &);
+		char* stringToCharStar(const string &);
 };
 
 #endif
