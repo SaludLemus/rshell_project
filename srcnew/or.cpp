@@ -8,10 +8,10 @@ Or::Or(Base* ln, Base* rn){ }
 Or::~Or(){ }
 
 bool Or::execute(){
-    if(leftNode->execute()){
-        return false;
+    if(!leftNode->execute()){
+        return rightNode->execute();
     }
-    return rightNode->execute();
+    return true;
 }
 
 void Or::display(){
