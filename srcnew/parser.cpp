@@ -15,6 +15,12 @@ Parser::Parser(const string &user_input) {
 	return;
 }
 
+void Parser::setString(const string &user_input){
+	str = user_input;
+	position = 0;
+	return;
+}
+
 // Create tree
 void Parser::createTree(){
 	// Delete root in case it exists
@@ -36,15 +42,18 @@ Base* Parser::getRoot(){
 }
 
 Command* Parser::nextCommand(){
-	if (str[position] == '#')
-		return NULL;
-	
+	// Check for special cases
+	Command* spcCMD = returnSpecialCommand();
+	if (spcCMD != NULL)
+		return spcCMD;
+
 	// tracks the last position of a word
 	size_t endposition = position;
 	// first tracks the starting position of a word then a modified last position
 	size_t backtrackposition = position;
+	// parameter size
 	int parameterSize = 0;
-	
+		
 	// Get command array size
 	do{
 		backtrackposition = endposition;
@@ -102,6 +111,26 @@ Connector* Parser::nextConnector(){
 	}
 	
 	std::cout << "Error with parsing. Did you forget a connector?" << std::endl;
+	return NULL;
+}
+
+Command* Parser::returnSpecialCommand(){
+	// check exit
+	if (str.string::substr(position, 4) == "exit"){
+		size_t backtrackposition = position;
+		size_t endposition = str.string::find(" ", position);
+		int parameterSize = 0;
+		checkCharSize(endposition, backtrackposition, parameterSize);
+		
+		position = endposition;
+		return new Exit();
+	}
+	
+	// check if empty
+	if (position == str.length()){
+		return new Command();
+	}
+	
 	return NULL;
 }
 

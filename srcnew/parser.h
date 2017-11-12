@@ -7,6 +7,7 @@
 #include "or.h"
 #include "semicolon.h"
 #include "command.h"
+#include "exit.h"
 
 using namespace std;
 class Parser {
@@ -17,12 +18,14 @@ class Parser {
 	
 	public:
 		Parser();
-		Parser(const string & user_input);
+		Parser(const string &);
+		void setString(const string &);
 		void createTree();
 		Base* getRoot(); // permit access to command class
 	private:
 		Command* nextCommand();
 		Connector* nextConnector();
+		Command* returnSpecialCommand();
 		bool checkCharSize(size_t &, size_t, int &);
 		void returnEndForParameters(size_t &, size_t &);
 		char* stringToCharStar(const string &);
