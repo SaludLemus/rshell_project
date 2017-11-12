@@ -1,23 +1,21 @@
-#ifndef connector_h_
-#define connector_h_
+#ifndef __CONNECTOR_H__
+#define __CONNECTOR_H__
 
-#include "commandline.h"
+#include "base.h"
 
-class Connector {
-	public:
-		Connector() {cmdSuccess = false;}
-		Connector(bool success) : cmdSuccess(success) {}
-		virtual ~Connector() {}
+class Connector: public Base{
 	protected:
-		bool cmdSuccess; // true if cmd worked, else false (for && and ||)
+		Base* leftNode;
+		Base* rightNode;
+	
 	public:
-		virtual void execute() = 0; // execute depends on connectors or single command
-		virtual bool checkExistence() = 0; // true if child exists
-		virtual bool checkStatus() = 0;
-		virtual char** getCMD() = 0;
-		virtual CommandConnector getConnector() = 0;
-		virtual void exitProg() = 0;
-	private:
+        Connector();
+        Connector(Base*, Base*);
+        ~Connector();
+        virtual bool execute() = 0;
+        virtual void display() = 0;
+        void setLeftNode(Base*);
+        void setRightNode(Base*);
 };
 
 #endif

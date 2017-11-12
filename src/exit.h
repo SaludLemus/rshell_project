@@ -1,7 +1,7 @@
 #ifndef __EXIT_H__
 #define __EXIT_H__
 
-#include "base.h"
+#include "command.h"
 
 class Exit: public Command{
     

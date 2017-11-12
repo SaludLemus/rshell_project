@@ -1,20 +1,32 @@
-#ifndef parser_h_
-#define parser_h_
+#ifndef __PARSER_H__
+#define __PARSER_H__
 #include <string>
-#include "commandline.h"
+#include <cstring>
+#include "base.h"
+#include "and.h"
+#include "or.h"
+#include "semicolon.h"
+#include "command.h"
+#include "exit.h"
 
-using std::string;
+using namespace std;
 class Parser {
 	private:
+		Base* root;
 		string str;
 		unsigned position;
 	
 	public:
 		Parser();
-		Parser(const string & user_input);
-		CommandLine* nextParse(); // permit access to command class
+		Parser(const string &);
+		void setString(const string &);
+		void createTree();
+		Base* getRoot(); // permit access to command class
 	private:
-		int checkConnectorforSize(size_t &, size_t &, int &);
+		Command* nextCommand();
+		Connector* nextConnector();
+		Command* returnSpecialCommand();
+		bool checkCharSize(size_t &, size_t, int &);
 		void returnEndForParameters(size_t &, size_t &);
 		char* stringToCharStar(const string &);
 };
