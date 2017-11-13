@@ -10,10 +10,6 @@
 #include <sys/stat.h>
 using namespace std;
 
-Test::Test(){
-    return;
-}
-
 Test::Test() : Command(){ }
 
 Test::Test(char** cmdArray) : Command(cmdArray){}
