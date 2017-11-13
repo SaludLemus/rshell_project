@@ -4,7 +4,7 @@
 #include "base.h"
 
 class Command: public Base{
-	private:
+	protected:
 		char** commandArray;
 	
 	public:

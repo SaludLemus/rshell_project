@@ -7,6 +7,7 @@ class Test: public Command{
     
 	public:
         Test();
+        Test(char**);
         ~Test();
         bool execute();
         void display();
