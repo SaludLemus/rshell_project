@@ -15,51 +15,163 @@ Parser::Parser(const string &user_input) {
 	return;
 }
 
+void Parser::setString(const string &user_input){
+	str = user_input;
+	position = 0;
+	return;
+}
 
-// Updates the backtrackpostion, endposition, and parameter size. 
-// Returns the int value of connector's enum value.
-int Parser::checkConnectorforSize(size_t & endposition, size_t & backtrackposition, int & parameterSize) {
+// Create tree
+void Parser::createTree(){
+	// Delete root in case it exists
+	delete root;
+	
+	root = nextCommand();
+	
+	while(position != str.length()){
+		Connector* newConnector = nextConnector();
+		newConnector->setLeftNode(root);
+		root = newConnector;
+		
+		newConnector->setRightNode(nextCommand());
+	}
+}
+
+Base* Parser::getRoot(){
+	return root;
+}
+
+Command* Parser::nextCommand(){
+	// Check for special cases
+	Command* spcCMD = returnSpecialCommand();
+	if (spcCMD != NULL)
+		return spcCMD;
+
+	// tracks the last position of a word
+	size_t endposition = position;
+	// first tracks the starting position of a word then a modified last position
+	size_t backtrackposition = position;
+	// parameter size
+	int parameterSize = 0;
+		
+	// Get command array size
+	do{
+		backtrackposition = endposition;
+		endposition = str.string::find(" ", endposition); // returns string::npos if not found
+	}while(!checkCharSize(endposition, backtrackposition, parameterSize));
+	
+	// Create Parameter array
+	char** commands = new char*[parameterSize + 1];
+		
+	// tracks the last position of a word
+	size_t parsedendposition = position;
+	// tracks the starting position of a word
+	size_t initalposition = position;
+	
+	// Fill Parameter with char*'s
+	for(int i = 0; i < parameterSize; i++){
+		initalposition = parsedendposition;
+		backtrackposition = parsedendposition;
+		parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
+		returnEndForParameters(parsedendposition, backtrackposition);
+		commands[i] = stringToCharStar(str.string::substr(initalposition, backtrackposition - initalposition));
+	}
+	
+	// set the last array to null
+	commands[parameterSize] = NULL;
+	
+	// Update position for next parse
+	position = endposition;
+	
+	return new Command(commands);
+}
+
+Connector* Parser::nextConnector(){
+	size_t startPosition = position;
+	position = str.string::find(" ", position); // returns string::npos if not found
+	
+	if (position == string::npos){
+		std::cout << "Error with parsing. Did you put an extra connector?" << std::endl;
+		return NULL;
+	}
+	
+	if (str[position - 1] == ';'){
+		position++;
+		return new Semicolon();
+	}
+	
+	string connector = str.string::substr(startPosition, 2);
+	if (connector == "&&"){
+		position++;
+		return new And();
+	}
+	if (connector == "||"){
+		position++;
+		return new Or();
+	}
+	
+	std::cout << "Error with parsing. Did you forget a connector?" << std::endl;
+	return NULL;
+}
+
+Command* Parser::returnSpecialCommand(){
+	// check exit
+	if (str.string::substr(position, 4) == "exit"){
+		size_t backtrackposition = position;
+		size_t endposition = str.string::find(" ", position);
+		int parameterSize = 0;
+		checkCharSize(endposition, backtrackposition, parameterSize);
+		
+		position = endposition;
+		return new Exit();
+	}
+	
+	// check if empty
+	if (position == str.length()){
+		return new Command();
+	}
+	
+	return NULL;
+}
+
+// Updates the endposition and parameter size. 
+// Returns true when it reaches an end
+bool Parser::checkCharSize(size_t & endposition, size_t backtrackposition, int & parameterSize) {
 	// Check for comments
 	if (str[backtrackposition] == '#'){
-		if (backtrackposition != 0)
-			backtrackposition -= 2;
 		endposition = str.length();
-		return 0;
+		return true;
 	}
 	
 	// Check for end of program
 	if (endposition == string::npos){
-		backtrackposition = str.length();
+		endposition = str.length();
 		parameterSize++;
-		return 0; // endCC
+		return true;
 	}
 	
-	// Check for ; in end
+	// Check for semicolons
 	if(str[endposition - 1] == ';'){
-		backtrackposition = endposition - 1;
+		endposition = backtrackposition;
 		parameterSize++;
-		return 1; // continueCC
+		return true;
 	}
 	
-	// Check for an alone &&
-	if(str.string::substr(backtrackposition, 2) == "&&"){
-		backtrackposition = endposition - 3;
-		return 2; // andCC
-	}
-		
-	// Check for an alone ||
-	if(str.string::substr(backtrackposition, 2) == "||"){
-		backtrackposition = endposition - 3;
-		return 3; // orCC
+	// Check for an alone && ||
+	string connector = str.string::substr(backtrackposition, 2);
+	if(connector == "&&" || connector == "||"){
+		endposition = backtrackposition;
+		return true;
 	}
 	
+	// Get to beginning of next word, add to parameter size
 	endposition++;
 	parameterSize++;
 	
-	return -1;
+	return false;
 }
 
-// Updates the backtrackpostion and endposition
+// Updates the backtrackpostion and endposition for the parser
 void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposition) {
 	
 	if (endposition == string::npos){
@@ -74,49 +186,6 @@ void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposi
 
 	backtrackposition = endposition;
 	endposition++;
-}
-
-// Returns a CommandLine* based on a parsed string within the class
-CommandLine* Parser::nextParse() {
-	// Return an exit if program parses nothing
-	if (position == str.length() || str[position] == '#')
-			return NULL;
-	
-	// Get command size
-	size_t endposition = position; // returns string::npos if not found
-	size_t backtrackposition = position;
-	int connector = -1;
-	int parameterSize = 0;
-	do{
-		backtrackposition = endposition;
-		endposition = str.string::find(" ", endposition); // returns string::npos if not found
-		connector = checkConnectorforSize(endposition, backtrackposition, parameterSize);
-	}while(connector == -1);
-	
-	// Create Parameter array
-	char** commands = new char*[parameterSize + 1];
-		
-	// Fill Parameter with char*'s
-	size_t parsedendposition = position;
-	size_t initalposition = position;
-	for(int i = 0; i < parameterSize; i++){
-		initalposition = parsedendposition;
-		backtrackposition = parsedendposition;
-		parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
-		returnEndForParameters(parsedendposition, backtrackposition);
-		commands[i] = stringToCharStar(str.string::substr(initalposition, backtrackposition - initalposition));
-	}
-	
-	commands[parameterSize] = NULL;
-	
-	CommandLine* CL = new CommandLine(commands, parameterSize, static_cast<CommandConnector>(connector));
-	
-	// Update position for next parse
-	if (endposition == str.length())
-		position = str.length();
-	else position = endposition + 1;
-		
-	return CL;
 }
 
 // returns the char* equivalent of a string

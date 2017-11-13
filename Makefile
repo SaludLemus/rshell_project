@@ -1,9 +1,9 @@
 CXX = g++
 CXXFLAGS = -c -Wall -Werror -ansi -pedantic
-EXEC = rshellnew
+EXEC = rshell
 
-SRCDIR = srcnew
-OBJDIR = objnew
+SRCDIR = src
+OBJDIR = obj
 BINDIR = bin
 
 SOURCES := $(wildcard $(SRCDIR)/*.cpp)

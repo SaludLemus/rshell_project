@@ -1,73 +1,74 @@
 #include "command.h"
+#include <iostream>
+#include <errno.h>
+#include <stdio.h>
 #include <cstdlib>
-Command::Command() : parse_cmd(0) {}
-
-Command::~Command() {
-	deallocParser();
-	deallocCMDList();
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+using namespace std;
+Command::Command(){
+    commandArray = 0;
 }
 
-void Command::init(const string &user_input) {
-	deallocParser();
-	parse_cmd = new Parser(user_input);
-	commandIterator(); // start parse
-	return;
+Command::Command(char** cmdArray){
+    commandArray = cmdArray;
 }
 
-void Command::commandIterator() {
-	deallocCMDList();
-	CommandLine* new_cmd = 0;
-	// use parse_cmd
-	do {
-		new_cmd = parse_cmd->nextParse(); // get command
-		cmd_list.push_back(new DefaultCommand(new_cmd));
+Command::~Command(){
+    delete[] commandArray;
+}
 
-		if (cmd_list.at(cmd_list.size() - 1)->getConnector() == 0)
-			break;
-	} while (cmd_list.size() != 0 && cmd_list.at(cmd_list.size() - 1)->getConnector() != 0); // continue parsing until last command is reached or no input is entered
-	
-	//cout << cmd_list.at(0)->getCMD() << endl;
-	for (unsigned int i = 0; i < cmd_list.size(); ++i) { // iterate through each cmd
-		//cmd_list.at(i)->display();
-	
-		if (cmd_list.at(i)->getConnector() == 0) { // exitCC
-			cmd_list.at(i)->execute();
+bool Command::execute(){
+	if (commandArray== 0) // points to char* that is mem. loc. 0
+		return false;
+		
+	pid_t child_pid; // for fork()
+	int child_status; // for waitpid()
+		
+	//checkExit(commandArray[0]); // exit prog if exit exists
+	child_pid = fork(); // create child process fork() returns an integer (0 == child)
+		
+	if (child_pid == 0) { // child will run cmd
+		
+		if (execvp(commandArray[0], commandArray) < 0) {// returns a negative value if failed to execute
+			perror("ERROR: Unknown command"); // error
+			//cout << "ERROR in child process returning to parent process" << endl;
+			exit(EXIT_FAILURE);
 		}
-		else if (cmd_list.at(i)->getConnector() == 1) // continueCC
-			cmd_list.at(i)->execute();
-		else if (cmd_list.at(i)->getConnector() == 2) {// andCC
-			cmd_list.at(i)->execute();
-			if (cmd_list.at(i)->checkStatus() == false) // skip next cmd
-				++i;
-		}
-		else if (cmd_list.at(i)->getConnector() == 3) {// orCC
-			cmd_list.at(i)->execute();
-			if (cmd_list.at(i)->checkStatus() == true) // skip next cmd
-				++i;
-		}
-		// cout << cmd_list.at(i)->getCMD() << endl; // null term.
-
 	}
-	
-	return;
+		
+	else if (child_pid == -1) {// fork failed
+		perror("ERROR: Unable to fork a child process"); // error message
+		exit(EXIT_FAILURE);
+	}
+	else { // parent has to wait for the child to be done
+		pid_t check_pid = waitpid(child_pid, &child_status, 0);
+		do {
+			
+			if (errno == EINTR) {// will set errno to EINTR if waitpid returns -1
+				perror("ERROR: Function was interrupted");
+				exit(EXIT_FAILURE);
+				return false;
+			}
+			else if (WIFEXITED(child_status)) { // child process did not execute
+				if (WEXITSTATUS(child_status) == EXIT_FAILURE) {
+					//cout << "returning false" << endl;
+					return false;
+				}
+			}
+				
+		} while(check_pid != child_pid);
+	}
+	//cout << "returning true" << endl;
+    return true;
 }
 
-void Command::deallocParser() {
-	if (parse_cmd)
-		delete parse_cmd;
-	parse_cmd = 0;
-	return;
-}
-
-
-void Command::exitProg() {
-	exit(0);
-	return;
-}
-
-
-void Command::deallocCMDList() {
-	for (unsigned int i = 0; i < cmd_list.size(); ++i)
-		delete cmd_list.at(i);
-	return;
+void Command::display(){
+    unsigned index = 0;
+    while(commandArray[index] != NULL){
+        std::cout << commandArray[index] << " ";
+        index++;
+    }
+    std::cout << std::endl;
 }

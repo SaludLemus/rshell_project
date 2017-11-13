@@ -1,27 +1,18 @@
-#ifndef Command_h_
-#define Command_h_
+#ifndef __COMMAND_H__
+#define __COMMAND_H__
 
-#include "parser.h"
-#include "commandline.h"
-#include "connector.h"
-#include "defaultcommand.h"
-#include <iostream>
-#include <string>
-#include <vector>
-using namespace std;
+#include "base.h"
 
-class Command {
-   public:
-		Command();
-		~Command();
-      void init(const string &);
-   private:
-      Parser* parse_cmd;
-      vector<Connector*> cmd_list;
-      void commandIterator(); // will call exit() if "exit" exists or end of parse is reached
-      void deallocParser();
-      void deallocCMDList();
-      void exitProg();
+class Command: public Base{
+	private:
+		char** commandArray;
+	
+	public:
+        Command();
+        Command(char**);
+        ~Command();
+        bool execute();
+        void display();
 };
 
 #endif
