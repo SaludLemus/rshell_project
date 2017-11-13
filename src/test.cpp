@@ -18,7 +18,8 @@ Test::~Test() { }
 
 bool Test::execute(){
 	struct stat flag_handler; // for -e, -f, -d
-	bool stat_success = true;
+	bool stat_success = true; // for -e
+	
 	// commandArray[0] is the flag type; commandArray[1] is the file path	
 		
 	// stat(const char* path, struct stat* buf)
@@ -43,8 +44,8 @@ bool Test::execute(){
 	
 	if (flag_type[1] == 'e') { // -e case
 		if (stat_success) { // file/directory exists
-				cout << "(True)" << endl;
-				return true;
+			cout << "(True)" << endl;
+			return true;
 		}
 		else
 			return false;
