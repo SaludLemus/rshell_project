@@ -28,7 +28,7 @@ void Parser::createTree(){
 	
 	root = nextCommand();
 	
-	while(position != str.length()){
+	while(position < str.length()){
 		Connector* newConnector = nextConnector();
 		newConnector->setLeftNode(root);
 		root = newConnector;
@@ -115,7 +115,6 @@ Connector* Parser::nextConnector(){
 }
 
 Command* Parser::returnSpecialCommand(){
-	
 	string command = str.string::substr(position, 4);
 	
 	// check exit
@@ -178,7 +177,48 @@ Command* Parser::returnSpecialCommand(){
 	
 	// check if test ([] verstion)
 	if (str[position] == '['){
+		// mirrors the procedure of the original parser, but slightly modified
 		
+		position += 2; // move position cursor, past [
+		
+		size_t endposition = position;
+		size_t backtrackposition = position;
+		int parameterSize = 0;
+			
+		do{
+			backtrackposition = endposition;
+			endposition = str.string::find(" ", endposition); // returns string::npos if not found
+		}while(!checkCharSize(endposition, backtrackposition, parameterSize));
+		
+		char** commandArray = new char*[3];
+		
+		size_t parsedendposition = position;
+		size_t initalposition = position;
+		int i = 0;	//index
+		
+		// parameter size = 1 (autofill to -e)
+		if (parameterSize == 1){
+			commandArray[i] = stringToCharStar("-e");
+			i++;
+		}
+		
+		// fill last two (or one) spots
+		while(i < 2){
+			initalposition = parsedendposition;
+			backtrackposition = parsedendposition;
+			parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
+			returnEndForParameters(parsedendposition, backtrackposition);
+			commandArray[i] = stringToCharStar(str.string::substr(initalposition, backtrackposition - initalposition));
+			i++;
+		}
+		
+		// set the last array to null
+		commandArray[i] = NULL;
+	
+		// Update position for next parse
+		position = endposition;
+		
+		return new Test(commandArray);
 	}
 	
 	// check if empty
@@ -192,16 +232,22 @@ Command* Parser::returnSpecialCommand(){
 // Updates the endposition and parameter size. 
 // Returns true when it reaches an end
 bool Parser::checkCharSize(size_t & endposition, size_t backtrackposition, int & parameterSize) {
+	
 	// Check for comments
-	if (str[backtrackposition] == '#'){
+	char firstLetter = str[backtrackposition];
+	if (firstLetter == '#'){
 		endposition = str.length();
 		return true;
 	}
 	
-	// Check for end of program
-	if (endposition == string::npos){
-		endposition = str.length();
-		parameterSize++;
+	// Check for end of test
+	if (firstLetter == ']'){
+		if (endposition == string::npos){
+			endposition = str.length();
+		}
+		else{
+			endposition += 1;
+		}
 		return true;
 	}
 	
@@ -219,6 +265,13 @@ bool Parser::checkCharSize(size_t & endposition, size_t backtrackposition, int &
 		return true;
 	}
 	
+	// Check for end of program
+	if (endposition == string::npos){
+		endposition = str.length();
+		parameterSize++;
+		return true;
+	}
+	
 	// Get to beginning of next word, add to parameter size
 	endposition++;
 	parameterSize++;
@@ -231,9 +284,10 @@ void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposi
 	
 	if (endposition == string::npos){
 		backtrackposition = str.length();
+		
 		return;
 	}
-		
+	
 	if(str[endposition - 1] == ';'){
 		backtrackposition = endposition - 1;
 		return;

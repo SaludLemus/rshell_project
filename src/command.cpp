@@ -8,7 +8,8 @@
 #include <sys/wait.h>
 using namespace std;
 Command::Command(){
-    commandArray = 0;
+    commandArray = new char*[1];
+    commandArray[0] = NULL;
 }
 
 Command::Command(char** cmdArray){

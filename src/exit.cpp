@@ -16,5 +16,5 @@ bool Exit::execute(){
 }
 
 void Exit::display(){
-    std::cout << "exit" << std::endl;
+    std::cout << "exit (Special Command)" << std::endl;
 }
