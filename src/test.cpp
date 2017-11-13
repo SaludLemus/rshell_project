@@ -33,6 +33,8 @@ bool Test::execute(){
 			perror("Component of path does not exits.");
 		else if (errno == ENOTDIR) // component of path prefix of path is not a dir.
 			perror("Component of path is not a directory.");
+		else 
+			perror("Error, file/directory specified can not be completed.");
 		exit(EXIT_FAILURE); // error
 	}
 	// determine flag type 
