@@ -8,6 +8,7 @@
 #include "semicolon.h"
 #include "command.h"
 #include "exit.h"
+#include "test.h"
 
 using namespace std;
 class Parser {
