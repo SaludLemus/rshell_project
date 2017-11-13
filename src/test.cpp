@@ -34,7 +34,7 @@ bool Test::execute(){
 			perror("Path is too long.");
 			
 		else if (errno == ENOENT) // path is empty or component of path DNE
-			perror("Component of path does not exits.");
+			perror("Component of path does not exists.");
 			
 		else if (errno == ENOTDIR) // component of path prefix of path is not a dir.
 			perror("Component of path is not a directory.");
@@ -53,8 +53,10 @@ bool Test::execute(){
 			cout << "(True)" << endl;
 			return true;
 		}
-		else
+		else {
+			cout << "(False)" << endl;
 			return false;
+		}
 	}
 	
 	else if (flag_type[1] == 'f') { 	// -f case
@@ -63,8 +65,10 @@ bool Test::execute(){
 			cout << "(True)" << endl;
 			return true;
 		}
-		else
+		else {
+			cout << "(False)" << endl;
 			return false;
+		}
 	}
 	
 	else if (flag_type[1] == 'd') { // -d case
@@ -73,15 +77,17 @@ bool Test::execute(){
 			cout << "(True)" << endl;
 			return true;
 		}
-		else
+		else {
+			cout << "(False)" << endl;
 			return false;
+		}
 	}
 	
 	else {// flag_type[1] does not match any of the flags
 		cout << "Flag type does not match" << endl;
 		exit(EXIT_FAILURE); // error
 	}
-		
+	cout << "(False)" << endl;
     return false;
 }
 
