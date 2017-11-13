@@ -115,15 +115,70 @@ Connector* Parser::nextConnector(){
 }
 
 Command* Parser::returnSpecialCommand(){
+	
+	string command = str.string::substr(position, 4);
+	
 	// check exit
-	if (str.string::substr(position, 4) == "exit"){
-		size_t backtrackposition = position;
+	if (command == "exit"){
 		size_t endposition = str.string::find(" ", position);
 		int parameterSize = 0;
-		checkCharSize(endposition, backtrackposition, parameterSize);
+		checkCharSize(endposition, position, parameterSize);
 		
 		position = endposition;
 		return new Exit();
+	}
+	
+	// check if test (test version)
+	if (command == "test"){
+		// mirrors the procedure of the original parser, but slightly modified
+		size_t endposition = position;
+		size_t backtrackposition = position;
+		int parameterSize = 0;
+			
+		do{
+			backtrackposition = endposition;
+			endposition = str.string::find(" ", endposition); // returns string::npos if not found
+		}while(!checkCharSize(endposition, backtrackposition, parameterSize));
+		
+		char** commandArray = new char*[3];
+		
+		size_t parsedendposition = position;
+		size_t initalposition = position;
+		int i = 0;	//index
+		
+		// skip once for test
+		backtrackposition = parsedendposition;
+		parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
+		returnEndForParameters(parsedendposition, backtrackposition);
+		
+		// parameter size = 2 (autofill to -e)
+		if (parameterSize == 2){
+			commandArray[i] = stringToCharStar("-e");
+			i++;
+		}
+		
+		// fill last two (or one) spots
+		while(i < 2){
+			initalposition = parsedendposition;
+			backtrackposition = parsedendposition;
+			parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
+			returnEndForParameters(parsedendposition, backtrackposition);
+			commandArray[i] = stringToCharStar(str.string::substr(initalposition, backtrackposition - initalposition));
+			i++;
+		}
+		
+		// set the last array to null
+		commandArray[i] = NULL;
+	
+		// Update position for next parse
+		position = endposition;
+		
+		return new Test(commandArray);
+	}
+	
+	// check if test ([] verstion)
+	if (str[position] == '['){
+		
 	}
 	
 	// check if empty

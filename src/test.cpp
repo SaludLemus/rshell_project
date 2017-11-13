@@ -9,13 +9,16 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 using namespace std;
+
 Test::Test(){
     return;
 }
 
-Test::~Test(){
-    return;
-}
+Test::Test() : Command(){ }
+
+Test::Test(char** cmdArray) : Command(cmdArray){}
+
+Test::~Test() { }
 
 bool Test::execute(){
 	struct stat flag_handler; // for -e, -f, -d
@@ -80,6 +83,6 @@ bool Test::execute(){
 }
 
 void Test::display(){
-    Command::display(); // call base class
+    std::cout << "test " << commandArray[0] << " " << commandArray[1] << std::endl;
     return;
 }
