@@ -43,7 +43,9 @@ bool Test::execute(){
 			perror("Error, file/directory specified can not be completed.");
 			
 		stat_success = false;
-		exit(EXIT_FAILURE); // error
+		cout << "(False)" << endl;
+		// exit(EXIT_FAILURE); 
+		return false; // error
 	}
 	
 	char* flag_type = commandArray[0]; // determine flag type 
@@ -84,8 +86,9 @@ bool Test::execute(){
 	}
 	
 	else {// flag_type[1] does not match any of the flags
-		cout << "Flag type does not match" << endl;
-		exit(EXIT_FAILURE); // error
+		//cout << "Flag type does not match" << endl;
+		cout << "(False)" << endl;
+		//exit(EXIT_FAILURE); // error
 	}
 	cout << "(False)" << endl;
     return false;
