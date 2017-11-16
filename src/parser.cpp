@@ -41,9 +41,9 @@ Base* Parser::getRoot(){
 	return root;
 }
 
-Command* Parser::nextCommand(){
+Base* Parser::nextCommand(){
 	// Check for special cases
-	Command* spcCMD = returnSpecialCommand();
+	Base* spcCMD = returnSpecialCommand();
 	if (spcCMD != NULL)
 		return spcCMD;
 
@@ -90,12 +90,14 @@ Connector* Parser::nextConnector(){
 	size_t startPosition = position;
 	position = str.string::find(" ", position); // returns string::npos if not found
 	
+	//std::cout << "Position[" << startPosition << "|" << position << "]" << std::endl;
+	
 	if (position == string::npos){
-		std::cout << "Error with parsing. Did you put an extra connector?" << std::endl;
+		std::cout << "Error with parsing. Did you leave extra spaces?" << std::endl;
 		return NULL;
 	}
 	
-	if (str[position - 1] == ';'){
+	if (str[startPosition] == ';'){
 		position++;
 		return new Semicolon();
 	}
@@ -110,115 +112,29 @@ Connector* Parser::nextConnector(){
 		return new Or();
 	}
 	
-	std::cout << "Error with parsing. Did you forget a connector?" << std::endl;
+	std::cout << "Error with parsing at connector. This shouldn't happen." << std::endl;
+	std::cout << "Connector string check [" << connector << "]" << std::endl;
+	std::cout << "Semicolon check [" << str[startPosition] << "]" << std::endl;
+	std::cout << "Position[" << startPosition << "|" << position << "]" << std::endl;
 	return NULL;
 }
 
-Command* Parser::returnSpecialCommand(){
-	string command = str.string::substr(position, 4);
+Base* Parser::returnSpecialCommand(){
+	// check parathesis
+	if(str[position] == '('){
+		position++;
+		return returnTreeCommand();
+	}
 	
 	// check exit
-	if (command == "exit"){
+	if (str.string::substr(position, 4) == "exit"){
+		size_t backtrackposition = position;
 		size_t endposition = str.string::find(" ", position);
 		int parameterSize = 0;
-		checkCharSize(endposition, position, parameterSize);
+		checkCharSize(endposition, backtrackposition, parameterSize);
 		
 		position = endposition;
 		return new Exit();
-	}
-	
-	// check if test (test version)
-	if (command == "test"){
-		// mirrors the procedure of the original parser, but slightly modified
-		size_t endposition = position;
-		size_t backtrackposition = position;
-		int parameterSize = 0;
-			
-		do{
-			backtrackposition = endposition;
-			endposition = str.string::find(" ", endposition); // returns string::npos if not found
-		}while(!checkCharSize(endposition, backtrackposition, parameterSize));
-		
-		char** commandArray = new char*[3];
-		
-		size_t parsedendposition = position;
-		size_t initalposition = position;
-		int i = 0;	//index
-		
-		// skip once for test
-		backtrackposition = parsedendposition;
-		parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
-		returnEndForParameters(parsedendposition, backtrackposition);
-		
-		// parameter size = 2 (autofill to -e)
-		if (parameterSize == 2){
-			commandArray[i] = stringToCharStar("-e");
-			i++;
-		}
-		
-		// fill last two (or one) spots
-		while(i < 2){
-			initalposition = parsedendposition;
-			backtrackposition = parsedendposition;
-			parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
-			returnEndForParameters(parsedendposition, backtrackposition);
-			commandArray[i] = stringToCharStar(str.string::substr(initalposition, backtrackposition - initalposition));
-			i++;
-		}
-		
-		// set the last array to null
-		commandArray[i] = NULL;
-	
-		// Update position for next parse
-		position = endposition;
-		
-		return new Test(commandArray);
-	}
-	
-	// check if test ([] verstion)
-	if (str[position] == '['){
-		// mirrors the procedure of the original parser, but slightly modified
-		
-		position += 2; // move position cursor, past [
-		
-		size_t endposition = position;
-		size_t backtrackposition = position;
-		int parameterSize = 0;
-			
-		do{
-			backtrackposition = endposition;
-			endposition = str.string::find(" ", endposition); // returns string::npos if not found
-		}while(!checkCharSize(endposition, backtrackposition, parameterSize));
-		
-		char** commandArray = new char*[3];
-		
-		size_t parsedendposition = position;
-		size_t initalposition = position;
-		int i = 0;	//index
-		
-		// parameter size = 1 (autofill to -e)
-		if (parameterSize == 1){
-			commandArray[i] = stringToCharStar("-e");
-			i++;
-		}
-		
-		// fill last two (or one) spots
-		while(i < 2){
-			initalposition = parsedendposition;
-			backtrackposition = parsedendposition;
-			parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
-			returnEndForParameters(parsedendposition, backtrackposition);
-			commandArray[i] = stringToCharStar(str.string::substr(initalposition, backtrackposition - initalposition));
-			i++;
-		}
-		
-		// set the last array to null
-		commandArray[i] = NULL;
-	
-		// Update position for next parse
-		position = endposition;
-		
-		return new Test(commandArray);
 	}
 	
 	// check if empty
@@ -229,32 +145,48 @@ Command* Parser::returnSpecialCommand(){
 	return NULL;
 }
 
+Base* Parser::returnTreeCommand(){
+
+	Base* treeRoot = nextCommand();
+	
+	while(str[position] != ')'){
+		Connector* newConnector = nextConnector();
+		newConnector->setLeftNode(treeRoot);
+		treeRoot = newConnector;
+		
+		newConnector->setRightNode(nextCommand());
+	}
+	if (str[position + 1] == ' ')
+		position += 2;
+	else
+		position++;
+		
+	
+	return treeRoot;
+}
+
 // Updates the endposition and parameter size. 
 // Returns true when it reaches an end
 bool Parser::checkCharSize(size_t & endposition, size_t backtrackposition, int & parameterSize) {
+	if (endposition == string::npos){
+		endposition = str.length();
+	}
 	
 	// Check for comments
-	char firstLetter = str[backtrackposition];
-	if (firstLetter == '#'){
+	if (str[backtrackposition] == '#'){
 		endposition = str.length();
 		return true;
 	}
 	
-	// Check for end of test
-	if (firstLetter == ']'){
-		if (endposition == string::npos){
-			endposition = str.length();
-		}
-		else{
-			endposition += 1;
-		}
-		return true;
-	}
-	
-	// Check for semicolons
-	if(str[endposition - 1] == ';'){
-		endposition = backtrackposition;
+	// Check for semicolons or ending parathesis
+	char endingChar = str[endposition - 1];
+	if(endingChar == ';' || endingChar == ')'){
 		parameterSize++;
+		do{
+			endposition -= 1;
+			endingChar = str[endposition - 1];
+		}while(endingChar == ';' || endingChar == ')');
+		
 		return true;
 	}
 	
@@ -266,8 +198,7 @@ bool Parser::checkCharSize(size_t & endposition, size_t backtrackposition, int &
 	}
 	
 	// Check for end of program
-	if (endposition == string::npos){
-		endposition = str.length();
+	if (endposition == str.length()){
 		parameterSize++;
 		return true;
 	}
@@ -283,13 +214,18 @@ bool Parser::checkCharSize(size_t & endposition, size_t backtrackposition, int &
 void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposition) {
 	
 	if (endposition == string::npos){
-		backtrackposition = str.length();
-		
-		return;
+		endposition = str.length();
 	}
-	
-	if(str[endposition - 1] == ';'){
-		backtrackposition = endposition - 1;
+		
+	// Make the backtrackposition be before all '(' and ';'
+	char endingChar = str[endposition - 1];
+	if(endingChar == ';' || endingChar == ')'){
+		backtrackposition = endposition;
+		do{
+			backtrackposition -= 1;
+			endingChar = str[backtrackposition - 1];
+		}while(endingChar == ';' || endingChar == ')');
+		
 		return;
 	}
 

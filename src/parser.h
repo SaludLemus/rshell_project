@@ -8,7 +8,6 @@
 #include "semicolon.h"
 #include "command.h"
 #include "exit.h"
-#include "test.h"
 
 using namespace std;
 class Parser {
@@ -24,9 +23,11 @@ class Parser {
 		void createTree();
 		Base* getRoot(); // permit access to command class
 	private:
-		Command* nextCommand();
+		Base* nextCommand();
 		Connector* nextConnector();
-		Command* returnSpecialCommand();
+		Base* returnSpecialCommand();
+		Base* returnTreeCommand();
+		
 		bool checkCharSize(size_t &, size_t, int &);
 		void returnEndForParameters(size_t &, size_t &);
 		char* stringToCharStar(const string &);

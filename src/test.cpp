@@ -92,6 +92,6 @@ bool Test::execute(){
 }
 
 void Test::display(){
-    std::cout << "test " << commandArray[0] << " " << commandArray[1] << std::endl;
+    std::cout << "test (special command) " << commandArray[0] << " " << commandArray[1] << std::endl;
     return;
 }
