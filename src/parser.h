@@ -20,6 +20,7 @@ class Parser {
 	public:
 		Parser();
 		Parser(const string &);
+		~Parser();
 		void setString(const string &);
 		void createTree();
 		Base* getRoot(); // permit access to command class

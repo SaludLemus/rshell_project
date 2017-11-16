@@ -15,6 +15,10 @@ Parser::Parser(const string &user_input) {
 	return;
 }
 
+Parser::~Parser(){
+	delete root;
+}
+
 void Parser::setString(const string &user_input){
 	str = user_input;
 	position = 0;
