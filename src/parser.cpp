@@ -132,7 +132,7 @@ Connector* Parser::nextConnector(){
 	return NULL;
 }
 
-// A helper parser of nextCommand that specifically looks for special commands
+// A helper parser of nextCommand() that specifically looks for special commands
 // Should never be used by itself, use nextCommand() instead
 // Returns a Base* of the next special command it sees, starting from the position
 // Returns NULL if no special command is found
@@ -258,6 +258,10 @@ Base* Parser::returnSpecialCommand(){
 	return NULL;
 }
 
+// A recursive helper parser of returnSpecialCommand() that specifically looks for parathesis
+// Should never be used by itself, use returnSpecialCommand() instead
+// Creates a "new" root from the open parathesis until it sees a close parathesis
+// Returns a Base* root of the next commands and connectors it sees, starting from the position
 Base* Parser::returnTreeCommand(){
 
 	Base* treeRoot = nextCommand();
@@ -269,6 +273,8 @@ Base* Parser::returnTreeCommand(){
 		
 		newConnector->setRightNode(nextCommand());
 	}
+	
+	// Updates the position for the next parse/next returnTreeCommand
 	if (str[position + 1] == ' ')
 		position += 2;
 	else
@@ -278,9 +284,11 @@ Base* Parser::returnTreeCommand(){
 	return treeRoot;
 }
 
-// Updates the endposition and parameter size. 
-// Returns true when it reaches an end
+// A helper parser of nextFunctions that updates the endposition and parameter size. 
+// Returns true when it reaches an end (i.e. comments, connectors, closing brackets/parathesis)
 bool Parser::checkCharSize(size_t & endposition, size_t startingposition, int & parameterSize) {
+	
+	// Fix the endposition before going any further
 	if (endposition == string::npos){
 		endposition = str.length();
 	}
@@ -295,16 +303,12 @@ bool Parser::checkCharSize(size_t & endposition, size_t startingposition, int & 
 	
 	// Check for end of test
 	if (firstLetter == ']'){
-		if (endposition == string::npos){
-			endposition = str.length();
-		}
-		else{
-			endposition += 1;
-		}
+		endposition += 1;
 		return true;
 	}
 	
 	// Check for semicolons or ending parathesis
+	// Update the endposition until it doesnt reference a semicolon or parathesis
 	char endingChar = str[endposition - 1];
 	if(endingChar == ';' || endingChar == ')'){
 		parameterSize++;
@@ -336,7 +340,9 @@ bool Parser::checkCharSize(size_t & endposition, size_t startingposition, int & 
 	return false;
 }
 
-// Updates the backtrackpostion and endposition for the parser
+// A helper parser of nextFunctions that updates the endposition and backtrackposition.
+// Used to get the correct substring of a word (due to ';' and ')')
+// Returns nothing
 void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposition) {
 	
 	if (endposition == string::npos){
@@ -359,7 +365,7 @@ void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposi
 	endposition++;
 }
 
-// returns the char* equivalent of a string
+// Returns the char* equivalent of a string
 char* Parser::stringToCharStar(const string & STR){
 	char* cstr = new char[STR.length() + 1];
 	strcpy(cstr, STR.c_str());

@@ -5,15 +5,13 @@
 int main(){
     Parser* P = new Parser();
     string user_input = "";
-    unsigned i = 10;
-    while(i > 0){
+    while(true){
         std::cout << "$ ";
         getline(cin, user_input);
         
         P->setString(user_input);
         P->createTree();
-        P->getRoot()->display();
-        i--;
+        P->getRoot()->execute();
     }
     
     delete P;
