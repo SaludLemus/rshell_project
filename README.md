@@ -54,7 +54,7 @@ As stated before, test can also be extended to work along with basic terminal co
 
 Assuming that the PATH exits, "(True)" will be displayed, and since the left expression is true, "this directory exists" will also be sent to the console.
 
-<h4 id="Flag e">Flag e/h3>
+<h4 id="Flag e">Flag e</h3>
 If the flag "-e" is encountered, this will check whether the PATH exists.
 NOTE: If a flag is not encountered, "-e" flag will be used by default:
 
@@ -64,14 +64,14 @@ NOTE: If a flag is not encountered, "-e" flag will be used by default:
 
 If the PATH exists, "(True)" will be displayed, else "(False)" will be displayed.
 
-<h4 id="Flag f">Flag f/h4>
+<h4 id="Flag f">Flag f</h4>
 If the flage "-f" is used, this will check if the PATH exists, AND if it is a regular file
 
     $ test -f /home/user/Documents/main.cpp
 
 If the PATH exists AND it is a regular file, "(True)" will be displayed; otherwise, "(False)" will be displayed.
 
-<h4 id="Flag d">Flag d/h4>
+<h4 id="Flag d">Flag d</h4>
 Now for the flag "-d", this will check whether the PATH exists, AND if it is a directory.
 
     $ test -d /home/user/Pictures
