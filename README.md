@@ -95,4 +95,5 @@ If the first set of parentheses returns true via the AND connector, then the OR 
 The program is currently a work in progress, so there will be bugs sadly. 
 
 List of known bugs:
-    With bash piping, empty commands will not create a newline. Unsure if this is a bash issue or a coding issue.
+    Placing quotations around arguments to group them together (echo "A B") will not work correctly if there is a connector or comment inside the quotations.
+    When using bash with the rshell, you must end the piped in commands with an exit or the program will go on indefinetely.
