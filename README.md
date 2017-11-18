@@ -22,11 +22,11 @@ If you desire to add logic connectors in your executables, then use "&&", "||", 
     $ mkdir bin && echo Created new directory
     $ mkdir bin || echo Directory already exists.
     
-&& : The following command will be executed if the previous succeeded.
+&&  The following command will be executed if the previous succeeded.
 
-|| : The following command will be executed if the previous failed.
+||  The following command will be executed if the previous failed.
 
-;  : The following command will be executed regardless of the previous' result.
+;   The following command will be executed regardless of the previous' result.
 
 There are no limits to the number of commands that can be chained using these and any other connectors.
 
@@ -58,20 +58,19 @@ Documentation is very important, so you are able to add comments into your comma
 Everything after the '#' will not be included in the arguments and such, will not interfere with your executables.
 
 <h2 id="How it works">How it works</h2>
-Our rshell stores the commands in a binary tree like so:
+The rshell utilizes a binary tree to store its commands, like so:
 
     $ echo hello world && mkdir bin || echo this is a test
 
+The commands will be executed in the standard inorder procedure.
+
 ![tree_diagram](https://user-images.githubusercontent.com/22006152/32976075-cc52a326-cc07-11e7-9f01-858e5c9ac62a.png)
 
-Now if parentheses are included in the commands, then the binary tree would look like:
+When parathesis are involved, the parser will create roots based on parathesised commands and simply set them as regular nodes, like so:
 
-    $ (echo A && (echo B || echo C))
+    $ echo A && (echo B || echo C)
 
 ![tree_diagram_with_parentheses](https://user-images.githubusercontent.com/22006152/32976154-dd5ab324-cc08-11e7-9a37-e7aa46fe1e38.png)
-
-<h2 id="Debugging">Debugging</h2>
-Debugging should go here.
 
 <h2 id="Known Bugs">Known Bugs</h2>
 
