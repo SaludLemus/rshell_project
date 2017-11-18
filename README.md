@@ -66,9 +66,13 @@ Everything after the '#' will not be included in the arguments and such, will no
 <h2 id="How it works">How it works</h2>
 Our rshell stores the commands in a binary tree like so:
 
+    $ echo hello world && mkdir bin || echo this is a test
+
 ![tree_diagram](https://user-images.githubusercontent.com/22006152/32976075-cc52a326-cc07-11e7-9f01-858e5c9ac62a.png)
 
 Now if parentheses are included in the commands, then the binary tree would look like:
+
+    $ (echo A && (echo B || echo C))
 
 ![tree_diagram_with_parentheses](https://user-images.githubusercontent.com/22006152/32976154-dd5ab324-cc08-11e7-9a37-e7aa46fe1e38.png)
 
