@@ -70,6 +70,8 @@ Our rshell stores the commands in a binary tree like so:
 
 Now if parentheses are included in the commands, then the binary tree would look like:
 
+![tree_diagram_with_parentheses](https://user-images.githubusercontent.com/22006152/32976154-dd5ab324-cc08-11e7-9a37-e7aa46fe1e38.png)
+
 <h2 id="Debugging">Debugging</h2>
 Debugging should go here.
 
