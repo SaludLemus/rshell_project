@@ -378,7 +378,15 @@ void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposi
 			backtrackposition++;
 		}while(str[backtrackposition] != '\"');
 	
-		endposition = backtrackposition + 2;
+		if (backtrackposition == str.length()){
+			endposition = backtrackposition;
+		}
+		else if (str[backtrackposition + 1] == ' '){
+			endposition = backtrackposition + 2;
+		}
+		else{
+			endposition = backtrackposition + 1;
+		}
 	
 		return;
 	}
