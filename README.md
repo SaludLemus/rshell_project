@@ -65,7 +65,7 @@ Everything after the '#' will not be included in the arguments and such, will no
 
 <h2 id="How it works">How it works</h2>
 Our rshell stores the commands in a binary tree like so:
-
+![Tree diagram without parentheses](Tree.xml)
 
 Now if parentheses are included in the commands, then the binary tree would look like:
 
