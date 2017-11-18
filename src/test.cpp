@@ -24,23 +24,23 @@ bool Test::execute(){
 		
 	// stat(const char* path, struct stat* buf)
 	if (stat(commandArray[1], &flag_handler) == -1) { // handle error -1, errno
-		if (errno == EACCES) // search permission is denied in the path
-			perror("Search permission is denied for one of the directories.");
+		//if (errno == EACCES) // search permission is denied in the path
+		//	perror("Search permission is denied for one of the directories.");
 			
-		else if (errno == ELOOP) // too many symbolic links while traversing
-			perror("Too many symbolic links while traversing.");
+	//	else if (errno == ELOOP) // too many symbolic links while traversing
+	//		perror("Too many symbolic links while traversing.");
 			
-		else if (errno == ENAMETOOLONG) // path is too long
-			perror("Path is too long.");
+	//	else if (errno == ENAMETOOLONG) // path is too long
+	//		perror("Path is too long.");
 			
-		else if (errno == ENOENT) // path is empty or component of path DNE
-			perror("Component of path does not exists.");
+	//	else if (errno == ENOENT) // path is empty or component of path DNE
+	//		perror("Component of path does not exists.");
 			
-		else if (errno == ENOTDIR) // component of path prefix of path is not a dir.
-			perror("Component of path is not a directory.");
+	//	else if (errno == ENOTDIR) // component of path prefix of path is not a dir.
+	//		perror("Component of path is not a directory.");
 			
-		else // handle all other errors
-			perror("Error, file/directory specified can not be completed.");
+	//	else // handle all other errors
+	//		perror("Error, file/directory specified can not be completed.");
 			
 		stat_success = false;
 		cout << "(False)" << endl;
