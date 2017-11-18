@@ -9,7 +9,7 @@ TEST5="((echo A && echo B) || echo C && echo D)"
 TEST6="(echo A && echo B); (echo C && echo D)"
 TEST7="(((echo A && echo B || echo C && echo D)))"
 TEST8="(echo A && echo B && (echo \"C && D\"))"
-TEST9="exit"
+TEST9="(echo A"
 
 echo -e "$TEST1\n$TEST2\n$TEST3\n$TEST4\n$TEST5\n$TEST6\n$TEST7\n$TEST8\n$TEST9\n" | ./bin/rshell
 

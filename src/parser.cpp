@@ -1,5 +1,6 @@
 #include "parser.h"
 #include <iostream>
+#include <cstdlib>
 
 using std::cout; using std::endl;
 
@@ -128,7 +129,8 @@ Connector* Parser::nextConnector(){
 		return new Or();
 	}
 	
-	std::cout << "Error with parsing at connector. Did you leave extra spaces?." << std::endl;
+	std::cout << "Error with parsing at connector. Did you leave extra spaces?. Unequal parathesis?" << std::endl;
+	exit(1);
 	return NULL;
 }
 
