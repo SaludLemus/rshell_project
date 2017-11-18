@@ -40,6 +40,12 @@ Can be manipulated with precdence operators such as:
 If the first set of parentheses returns true via the AND connector, then the OR connector's right expression, which is now condensed into a group via parentheses, will not be executed. Otherwise, if the first set of parentheses returns false, then the right expression of the OR connector will be executed.
 
 <h4 id="Special Commands">Special Commands</h4>
+If you want to exit out of the rshell, "exit" will terminate the program. For example:
+
+    $ echo hello world; exit; mkdir bin
+
+Afer the first command executes, "exit" will be encountered by the rshell, which will then terminate the program, and thus disregarding anything that comes after.
+
 Next, if you want to use an equivalent terminal command of "test", "[ ]" should be explicitly used around the command itself. For example:
 
     Both are equivalent!
@@ -48,6 +54,7 @@ Next, if you want to use an equivalent terminal command of "test", "[ ]" should 
 
 This will display to the console "(True)" if the directory exists, or it will display "(False)" to the console if it does not exist.
 
+<h4 id ="Commenting">Commenting</h4>
 Documentation is very important, so you are able to add comments into your command lines.
 
     These are same!
