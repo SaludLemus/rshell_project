@@ -80,4 +80,4 @@ List of known bugs:
 
 Syntax is very strict. Extra spaces will crash the parser.
 
-An unequal amount of parathesis will also crash the parser.
+An unequal amount of parentheses will also crash the parser.
