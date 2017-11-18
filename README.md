@@ -5,19 +5,13 @@
 <h3 id="Introduction">Introduction</h3>
 Run multiple PATH executables with success and failure logic connectors between executables alongside commenting. Further determine whether a given PATH exists by using specific flags.
 
-<h3 id="Basics">Basics</h3>
-The usage is intuitive as it is based off basic terminal commands and logic code. For example:
+<h3 id="Getting Started">Getting Started</h3>
+The usage is intuitive. Once you are in the main directory, execute "make" which will create an executable that is located in the "bin" directory called "rshell."
 
-    $ ls -a
-    $ echo hello
-    $ mkdir test
-    
-can be condensed into one single line:
+<h3 id="Syntax">Syntax</h3>
 
-    $ ls -a; echo hello; mkdir test
-
-<h3 id="Logic">Logic</h3>
-If you desire to add logic connectors in your executables, then use "&&" and "||" between commands. For example:
+<h4 id="Logic Connectors">Logic Connectors</h4>
+If you desire to add logic connectors in your executables, then use "&&", "||", and ";" between commands. For example:
 
     $ mkdir bin && echo Created new directory
     
@@ -27,9 +21,40 @@ will attempt to create the directory bin and will only execute the echo command 
     
 will attempt to create the directory bin; however, the echo will only execute if the previous command failed.
 
-There is no limit to the number of commands that be chained using these and any other connectors.
+    $ mkdir bin; echo Directory already exists.
+    
+will attempt to create directory, and it will then execute the following command regardless if the prior command failed or succeeded.
 
-<h3 id="Commenting">Commenting</h3>
+There are no limits to the number of commands that can be chained using these and any other connectors.
+
+<h4 id="Parentheses">Parentheses</h4>
+Now with the introduction of precedence operators by using parentheses (), this will change the precedence of the returns of commands, connectors, and chains of connectors:
+For example:
+
+    $ mkdir bin && echo A bin directory has been created || mkdir newbin && echo A new bin directory has been created
+
+Can be manipulated with precdence operators such as:
+
+    $ (mkdir bin && echo A bin directory has been created) || (mkdir newbin && echo A new bin directory has been created)
+    
+If the first set of parentheses returns true via the AND connector, then the OR connector's right expression, which is now condensed into a group via parentheses, will not be executed. Otherwise, if the first set of parentheses returns false, then the right expression of the OR connector will be executed.
+
+<h4 id="Special Commands">Special Commands</h4>
+If you want to exit out of the rshell, "exit" will terminate the program. For example:
+
+    $ echo hello world; exit; mkdir bin
+
+Afer the first command executes, "exit" will be encountered by the rshell, which will then terminate the program, and thus disregarding anything that comes after.
+
+Next, if you want to use an equivalent terminal command of "test", "[ ]" should be explicitly used around the command itself. For example:
+
+    Both are equivalent!
+    $ test -e /home/user/Documents
+    $ [ -e /home/user/Documents ]
+
+This will display to the console "(True)" if the directory exists, or it will display "(False)" to the console if it does not exist.
+
+<h4 id ="Commenting">Commenting</h4>
 Documentation is very important, so you are able to add comments into your command lines.
 
     These are same!
@@ -38,7 +63,7 @@ Documentation is very important, so you are able to add comments into your comma
     
 Everything after the '#' will not be included in the arguments and such, will not interfere with your executables.
 
-<h3 id="Test">Test</h3>
+<h4 id="Special Commands">Special Commands</h4>
 The test command enables to determine whether a specified PATH does or does not exist by using either: -e, -f, or -d as flags, which will output "(True)" or "(False)" to the console.
 NOTE: test is equivalent to square brackets ([])
 
@@ -54,7 +79,7 @@ As stated before, test can also be extended to work along with basic terminal co
 
 Assuming that the PATH exits, "(True)" will be displayed, and since the left expression is true, "this directory exists" will also be sent to the console.
 
-<h4 id="-e">-e</h3>
+<h4 id="-e">-e</h4>
 If the flag "-e" is encountered, this will check whether the PATH exists.
 NOTE: If a flag is not encountered, "-e" flag will be used by default:
 
@@ -77,18 +102,6 @@ Now for the flag "-d", this will check whether the PATH exists, AND if it is a d
     $ test -d /home/user/Pictures
     
 If the PATH exists, AND if it is a directory, then "(True)" will be sent to the console; otherwise, "(False)" will be displayed.
-
-<h3 id="Precedence Operators">Precedence Operators</h3>
-Now with the introduction of precedence operators by using parentheses (), this will change the precedence of the returns of commands, connectors, and chains of connectors:
-For example:
-
-    $ test -d /home/user/Documents/Projects && echo PATH exists and is a directory || echo PATH is does not exist && echo PATH is not directory
-
-Can be manipulated with precdence operators such as:
-
-    $ (test -d /home/user/Documents/Projects && echo PATH exists and is a directory) || (echo PATH is does not exist && echo PATH is not directory)
-    
-If the first set of parentheses returns true via the AND connector, then the OR connector's right expression, which is now condensed into a group via parentheses, will not be executed. Otherwise, if the first set of parentheses returns false, then the right expression of the OR connector will be executed.
 
 <h2 id="Known Bugs">Known Bugs</h2>
 
