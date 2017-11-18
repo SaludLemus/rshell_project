@@ -31,7 +31,7 @@ class Parser {
 		Base* returnTreeCommand();
 		
 		bool checkCharSize(size_t &, size_t, int &);
-		void returnEndForParameters(size_t &, size_t &);
+		void returnEndForParameters(size_t &, size_t &, size_t &);
 		char* stringToCharStar(const string &);
 };
 

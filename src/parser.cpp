@@ -86,7 +86,7 @@ Base* Parser::nextCommand(){
 		startingposition = parsedendposition;
 		backtrackposition = parsedendposition;
 		parsedendposition = str.string::find(" ", parsedendposition); /* CHANGE TO A BETTER WORD SEARCH LATER */
-		returnEndForParameters(parsedendposition, backtrackposition);
+		returnEndForParameters(parsedendposition, backtrackposition, startingposition);
 		commands[i] = stringToCharStar(str.string::substr(startingposition, backtrackposition - startingposition));
 	}
 	
@@ -177,7 +177,7 @@ Base* Parser::returnSpecialCommand(){
 		// skip once for test
 		backtrackposition = parsedendposition;
 		parsedendposition = str.string::find(" ", parsedendposition);
-		returnEndForParameters(parsedendposition, backtrackposition);
+		returnEndForParameters(parsedendposition, backtrackposition, startingposition);
 		
 		// autofill to -e if the parameter size is 2
 		if (parameterSize == 2){
@@ -190,7 +190,7 @@ Base* Parser::returnSpecialCommand(){
 			startingposition = parsedendposition;
 			backtrackposition = parsedendposition;
 			parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
-			returnEndForParameters(parsedendposition, backtrackposition);
+			returnEndForParameters(parsedendposition, backtrackposition, startingposition);
 			commandArray[i] = stringToCharStar(str.string::substr(startingposition, backtrackposition - startingposition));
 			i++;
 		}
@@ -235,7 +235,7 @@ Base* Parser::returnSpecialCommand(){
 			startingposition = parsedendposition;
 			backtrackposition = parsedendposition;
 			parsedendposition = str.string::find(" ", parsedendposition); // returns string::npos if not found
-			returnEndForParameters(parsedendposition, backtrackposition);
+			returnEndForParameters(parsedendposition, backtrackposition, startingposition);
 			commandArray[i] = stringToCharStar(str.string::substr(startingposition, backtrackposition - startingposition));
 			i++;
 		}
@@ -303,8 +303,18 @@ bool Parser::checkCharSize(size_t & endposition, size_t startingposition, int & 
 	
 	// Check for end of test
 	if (firstLetter == ']'){
-		endposition += 1;
+		endposition++;
 		return true;
+	}
+	
+	// Check for quotations
+	//std::cout << firstLetter << std::endl;
+	if (firstLetter == '\"'){
+		do{
+			endposition++;
+		}while(str[endposition] != '\"');
+		
+		endposition++;
 	}
 	
 	// Check for semicolons or ending parathesis
@@ -328,7 +338,7 @@ bool Parser::checkCharSize(size_t & endposition, size_t startingposition, int & 
 	}
 	
 	// Check for end of program
-	if (endposition == str.length()){
+	if (endposition >= str.length()){
 		parameterSize++;
 		return true;
 	}
@@ -343,7 +353,7 @@ bool Parser::checkCharSize(size_t & endposition, size_t startingposition, int & 
 // A helper parser of nextFunctions that updates the endposition and backtrackposition.
 // Used to get the correct substring of a word (due to ';' and ')')
 // Returns nothing
-void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposition) {
+void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposition, size_t & startingposition) {
 	
 	if (endposition == string::npos){
 		endposition = str.length();
@@ -358,6 +368,18 @@ void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposi
 			endingChar = str[backtrackposition - 1];
 		}while(endingChar == ';' || endingChar == ')');
 		
+		return;
+	}
+	
+	// Do quotation stuff
+	if (str[backtrackposition] == '\"'){
+		startingposition++;
+		do{
+			backtrackposition++;
+		}while(str[backtrackposition] != '\"');
+	
+		endposition = backtrackposition + 2;
+	
 		return;
 	}
 

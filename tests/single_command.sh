@@ -3,7 +3,7 @@
 
 TEST1="pwd"
 TEST2="ls -a"
-TEST3="echo '||'"
+TEST3="echo \"||\""
 TEST4="echo hello world ! ! ! !"
 TEST5="\n"
 TEST6="FAILCOMMAND"
