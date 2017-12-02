@@ -26,7 +26,7 @@ bool Command::execute(){
 		
 	pid_t child_pid; // for fork()
 	int child_status; // for waitpid()
-		
+	
 	//checkExit(commandArray[0]); // exit prog if exit exists
 	child_pid = fork(); // create child process fork() returns an integer (0 == child)
 		
@@ -44,19 +44,17 @@ bool Command::execute(){
 		exit(EXIT_FAILURE);
 	}
 	else { // parent has to wait for the child to be done
-		pid_t check_pid = waitpid(child_pid, &child_status, 0);
+		pid_t check_pid;
 		do {
-			
+			check_pid = waitpid(child_pid, &child_status, 0);
 			if (errno == EINTR) {// will set errno to EINTR if waitpid returns -1
 				perror("ERROR: Function was interrupted");
 				exit(EXIT_FAILURE);
 				return false;
 			}
-			else if (WIFEXITED(child_status)) { // child process did not execute
-				if (WEXITSTATUS(child_status) == EXIT_FAILURE) {
-					//cout << "returning false" << endl;
-					return false;
-				}
+			else if (WIFEXITED(child_status) && WEXITSTATUS(child_status) == EXIT_FAILURE) { // child process did not execute
+				//cout << "returning false" << endl;
+				return false;
 			}
 				
 		} while(check_pid != child_pid);
