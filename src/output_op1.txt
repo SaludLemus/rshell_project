@@ -69,7 +69,7 @@ bool OutputRedirection1::check_close() {
 bool OutputRedirection1::change_output() {
 	// open(const char* FILE_NAME, INT FLAGS)
 	// file will be write only and will be created if DNE and truncate to zero bytes
-	if (open(file_name, O_WRONLY | O_CREAT | O_TRUNC)) { // open() failed and errno is set
+	if (open(file_name, O_WRONLY | O_CREAT | O_TRUNC) == -1) { // open() failed and errno is set
 		if (errno == EACCES)
 			cout << "File access not allowed; File does not exist." << endl;
 		if (errno == ELOOP)
