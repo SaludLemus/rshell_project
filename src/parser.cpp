@@ -305,13 +305,19 @@ bool Parser::checkCharSize(size_t & endposition, size_t startingposition, int & 
 	
 	// Check for end of test
 	if (firstLetter == ']'){
-		endposition++;
+		if (startingposition + 1 != endposition){
+			endposition = startingposition + 1;
+		}
+		else{
+			endposition++;
+		}
 		return true;
 	}
 	
 	// Check for quotations
 	//std::cout << firstLetter << std::endl;
 	if (firstLetter == '\"'){
+		endposition = startingposition + 1;
 		do{
 			endposition++;
 		}while(str[endposition] != '\"');
@@ -360,21 +366,9 @@ void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposi
 	if (endposition == string::npos){
 		endposition = str.length();
 	}
-		
-	// Make the backtrackposition be before all '(' and ';'
-	char endingChar = str[endposition - 1];
-	if(endingChar == ';' || endingChar == ')'){
-		backtrackposition = endposition;
-		do{
-			backtrackposition -= 1;
-			endingChar = str[backtrackposition - 1];
-		}while(endingChar == ';' || endingChar == ')');
-		
-		return;
-	}
-	
+
 	// Do quotation stuff
-	if (str[backtrackposition] == '\"'){
+	if (str[startingposition] == '\"'){
 		startingposition++;
 		do{
 			backtrackposition++;
@@ -392,7 +386,19 @@ void Parser::returnEndForParameters(size_t & endposition, size_t & backtrackposi
 	
 		return;
 	}
-
+		
+	// Make the backtrackposition be before all ')' and ';'
+	char endingChar = str[endposition - 1];
+	if(endingChar == ';' || endingChar == ')'){
+		backtrackposition = endposition;
+		do{
+			backtrackposition -= 1;
+			endingChar = str[backtrackposition - 1];
+		}while(endingChar == ';' || endingChar == ')');
+		
+		return;
+	}
+	
 	backtrackposition = endposition;
 	endposition++;
 }
