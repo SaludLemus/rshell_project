@@ -1,0 +1,37 @@
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+
+// ex: ls > test.txt
+
+// ASSUMES ONLY ONE CHILD
+bool OutputRedirection1::execute() {
+	if (child) { // child exists
+		int save_1 = dup(1); // save [1]
+		
+		// check dup()
+		
+		// redirect file to [1]
+		
+		// check execute()
+		
+		// restore 1
+		
+	}
+	return false;
+}
+
+bool OutputRedirection1::check_dup(int save_1) {
+	if (save_1 == -1) { // dup() failed and errno is set
+		if (errno == EBADF)
+			cout << "New fd is out of the allowed range." << endl;
+		
+		cout << "Dup() failed.)" << endl;
+		return false;
+	}
+	return true;
+}
