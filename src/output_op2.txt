@@ -8,7 +8,7 @@
 
 // ex: ls >> test.txt
 
-// ASSUMES ONLY ONE CHILD AND FILE IS A DATA MEMBER CALLED FILENAME
+// ASSUMES ONLY ONE CHILD AND FILE IS A DATA MEMBER CALLED file_name
 bool OutputRedirection2::execute() {
 	if (child) { // child exists
 		int save_1 = dup(1); // save [1]

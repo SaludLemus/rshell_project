@@ -6,7 +6,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-// assumes class has left and right child
+// assumes class has a left and right child
 bool PipeClass::execute() {
 	if (left_child && right_child) { // both childs exist
 		int save_0 = dup(0); // save [0] and [1]

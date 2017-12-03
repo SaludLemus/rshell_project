@@ -8,7 +8,7 @@
 
 // ex: < test.txt
 
-// ASSUMES ONE CHILD AND FILE IS A DATA MEMBER CALLED FILENAME
+// ASSUMES ONE CHILD AND FILE IS A DATA MEMBER CALLED file_name
 
 bool InputRedirection::execute() {
 	if (child) { // child exists
