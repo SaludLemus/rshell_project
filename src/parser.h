@@ -9,6 +9,10 @@
 #include "command.h"
 #include "exit.h"
 #include "test.h"
+#include "pipe.h"
+#include "input.h"
+#include "output.h"
+#include "append.h"
 
 using namespace std;
 class Parser {

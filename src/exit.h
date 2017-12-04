@@ -3,7 +3,7 @@
 
 #include "command.h"
 
-class Exit: public Command{
+class Exit: public Base{
     
 	public:
         Exit();

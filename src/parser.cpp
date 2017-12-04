@@ -112,13 +112,26 @@ Connector* Parser::nextConnector(){
 		return NULL;
 	}
 	
-	// Return Semicolon* if it sees, well, a semicolon
-	if (str[startPosition] == ';'){
+	// Return a Semicolon*, Input*, Output*, or Pipe* if either of the single char are found
+	char singleChar = str[startPosition];
+	if (singleChar == ';'){
 		position++;
 		return new Semicolon();
 	}
+	if (singleChar == '>'){
+		position++;
+		return new Output();
+	}
+	if (singleChar == '<'){
+		position++;
+		return new Input();
+	}
+	if (singleChar == '|'){
+		position++;
+		return new Pipe();
+	}
 	
-	// Return an And* or Or* if either of the strings are found
+	// Return an And*, Or* or Append* if either of the strings are found
 	string connector = str.string::substr(startPosition, 2);
 	if (connector == "&&"){
 		position++;
@@ -127,6 +140,10 @@ Connector* Parser::nextConnector(){
 	if (connector == "||"){
 		position++;
 		return new Or();
+	}
+	if (connector == ">>"){
+		position++;
+		return new Append();
 	}
 	
 	std::cout << "Error with parsing at connector. Did you leave extra spaces?. Unequal parathesis?" << std::endl;
@@ -315,7 +332,6 @@ bool Parser::checkCharSize(size_t & endposition, size_t startingposition, int & 
 	}
 	
 	// Check for quotations
-	//std::cout << firstLetter << std::endl;
 	if (firstLetter == '\"'){
 		endposition = startingposition + 1;
 		do{
@@ -338,9 +354,11 @@ bool Parser::checkCharSize(size_t & endposition, size_t startingposition, int & 
 		return true;
 	}
 	
-	// Check for an alone && ||
+	// Check for an alone && || >>
+	// Check for an alone > < |
 	string connector = str.string::substr(startingposition, 2);
-	if(connector == "&&" || connector == "||"){
+	if(connector == "&&" || connector == "||" || connector == ">>" || 
+		firstLetter == '|' || firstLetter == '>' || firstLetter == '<'){
 		endposition = startingposition;
 		return true;
 	}
