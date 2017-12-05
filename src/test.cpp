@@ -98,3 +98,4 @@ void Test::display(){
     std::cout << "test (special command) " << commandArray[0] << " " << commandArray[1] << std::endl;
     return;
 }
+

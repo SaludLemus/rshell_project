@@ -112,6 +112,21 @@ Connector* Parser::nextConnector(){
 		return NULL;
 	}
 	
+	// Return an And*, Or* or Append* if either of the strings are found
+	string connector = str.string::substr(startPosition, 2);
+	if (connector == "&&"){
+		position++;
+		return new And();
+	}
+	if (connector == "||"){
+		position++;
+		return new Or();
+	}
+	if (connector == ">>"){
+		position++;
+		return new Append();
+	}
+	
 	// Return a Semicolon*, Input*, Output*, or Pipe* if either of the single char are found
 	char singleChar = str[startPosition];
 	if (singleChar == ';'){
@@ -129,21 +144,6 @@ Connector* Parser::nextConnector(){
 	if (singleChar == '|'){
 		position++;
 		return new Pipe();
-	}
-	
-	// Return an And*, Or* or Append* if either of the strings are found
-	string connector = str.string::substr(startPosition, 2);
-	if (connector == "&&"){
-		position++;
-		return new And();
-	}
-	if (connector == "||"){
-		position++;
-		return new Or();
-	}
-	if (connector == ">>"){
-		position++;
-		return new Append();
 	}
 	
 	std::cout << "Error with parsing at connector. Did you leave extra spaces?. Unequal parathesis?" << std::endl;

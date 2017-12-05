@@ -7,6 +7,7 @@ class Output: public Connector{
     
 	public:
         Output();
+        Output(Base*, Base*);
         ~Output();
         bool execute();
         void display();

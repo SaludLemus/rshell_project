@@ -71,3 +71,7 @@ void Command::display(){
     }
     std::cout << std::endl;
 }
+
+char* Command::getCommand(){
+	return commandArray[0];
+}

@@ -7,6 +7,7 @@ class Append: public Connector{
     
 	public:
         Append();
+        Append(Base*, Base*);
         ~Append();
         bool execute();
         void display();

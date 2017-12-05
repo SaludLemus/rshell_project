@@ -7,6 +7,7 @@ class Pipe: public Connector{
     
 	public:
         Pipe();
+        Pipe(Base*, Base*);
         ~Pipe();
         bool execute();
         void display();

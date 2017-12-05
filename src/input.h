@@ -7,6 +7,7 @@ class Input: public Connector{
     
 	public:
         Input();
+        Input(Base*, Base*);
         ~Input();
         bool execute();
         void display();

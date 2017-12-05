@@ -6,6 +6,7 @@ class Base{
         virtual ~Base() {}
         virtual bool execute() = 0;
         virtual void display() = 0;
+        virtual char* getCommand() {return '\0';}
 };
 
 #endif

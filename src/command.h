@@ -13,6 +13,7 @@ class Command: public Base{
         ~Command();
         bool execute();
         void display();
+        char* getCommand();
 };
 
 #endif
