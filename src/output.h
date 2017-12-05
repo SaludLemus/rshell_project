@@ -4,13 +4,18 @@
 #include "connector.h"
 
 class Output: public Connector{
-    
+    private:
+    char* file_name;
 	public:
         Output();
         Output(Base*, Base*);
         ~Output();
         bool execute();
         void display();
+        bool check_dup(int);
+        bool check_close();
+        bool change_output();
+        bool restore_save1(int);
 };
 
 #endif
