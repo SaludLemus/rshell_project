@@ -47,7 +47,7 @@ bool Append::execute(){
 
 void Append::display(){
     leftNode->display();
-    std::cout << "|" << std::endl;
+    std::cout << ">>" << std::endl;
     rightNode->display();
 }
 
