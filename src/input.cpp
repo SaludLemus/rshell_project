@@ -45,8 +45,9 @@ bool Input::execute(){
 }
 
 void Input::display(){
-    
+    leftNode->display();
     std::cout << "<" << std::endl;
+    rightNode->display();
 }
 
 bool Input::check_dup(int save_0) {

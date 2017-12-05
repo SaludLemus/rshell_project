@@ -2,7 +2,7 @@
 #tests input redirection commands
 
 TEST1="cat < B" #prints B
-TEST2="cat A < B;" #prints A
+TEST2="cat A < B" #prints A
 TEST3="cat < A B A" #prints B A
 TEST4="cat A B A < A" #prints A B A
 TEST5="cat A B A < A B A" #prints A B A B A

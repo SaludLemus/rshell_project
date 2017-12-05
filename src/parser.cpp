@@ -357,6 +357,7 @@ bool Parser::checkCharSize(size_t & endposition, size_t startingposition, int & 
 	// Check for an alone && || >>
 	// Check for an alone > < |
 	string connector = str.string::substr(startingposition, 2);
+	//::cout << connector << " " << firstLetter << std::endl;
 	if(connector == "&&" || connector == "||" || connector == ">>" || 
 		firstLetter == '|' || firstLetter == '>' || firstLetter == '<'){
 		endposition = startingposition;
