@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <iostream>
 using namespace std;
+
 Input::Input(){file_name = 0;}
 
 Input::Input(Base* ln, Base* rn){file_name = rn->getCommand();}
