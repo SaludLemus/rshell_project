@@ -17,7 +17,7 @@ Pipe::~Pipe(){ }
 
 // assumes class has a left and right child
 bool Pipe::execute() {
-	if (leftNode || rightNode)
+	if (!leftNode || !rightNode)
 		return false;
 		
 	 // both childs exist
@@ -28,30 +28,25 @@ bool Pipe::execute() {
 	// check dup()
 	if (!check_dup(save_0, save_1))
 		return false;
-		
-		// close 0 and 1
-	if (!check_close())
+	
+	pipe(fds); // pipe()
+	dup2(fds[0], 0); // fds[0] to [0]
+	dup2(fds[1], 1); // fds[1] to [1]
+	
+	close(fds[0]); // close
+	close(fds[1]);
+	
+	if (!leftNode->execute()) // left child
+		return false;
+	
+	dup2(save_1, 1); // set new [1] to old [1]
+	close(save_1); // close
+	
+	if (!rightNode->execute()) // right child
 		return false;
 		
-	// pipe() and check
-	if (!check_pipe(fds))
-		return false;
-		
-	// execute left child and check
-	if (!leftNode->execute()) // left child failed
-		return false;
-		
-	// restore save_1 via dup2() and check ===== dup2(int oldfd, int newfd) // copies newfds will be a copy of oldfd
-	if (!restore_save1(save_1))
-		return false;
-		
-	// execute right_child
-	if (!rightNode->execute()) // right child failed
-		return false;
-		
-	// restore save_0 via dup2() and check
-	if (!restore_save0(save_0))
-		return false;
+	dup2(save_0, 0); // set new [0] to old[0]
+	close(save_0);
 		
 	return true;
 }
