@@ -11,6 +11,11 @@ class Pipe: public Connector{
         ~Pipe();
         bool execute();
         void display();
+        bool restore_save0(int);
+        bool restore_save1(int);
+        bool check_close();
+        bool check_dup(int, int);
+        bool check_pipe(int [2]);
 };
 
 #endif
