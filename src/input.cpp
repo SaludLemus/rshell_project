@@ -15,33 +15,34 @@ Input::Input(Base* ln, Base* rn){file_name = rn->getCommand();}
 Input::~Input(){file_name = 0;}
 
 bool Input::execute(){
-   if (leftNode && rightNode) { // child exists
-		int save_0 = dup(0);
+	if (!leftNode || !rightNode)
+		return false;
+		
+	if (!file_name)
+		file_name = rightNode->getCommand();
+		
+	int save_0 = dup(0); // save [0]
 	
-		// check dup()
-		if (!check_dup(save_0))
-			return false;
+	//check dup()
+	if (!check_dup(save_0))
+		return false;
 		
-		// close [0] and check
-		if (!check_close())
-			return false;
-		
-		// set fd for file to [0] and check
-		if (!change_input())
-			return false;
-		
-		// check execute()
-		if (!leftNode->execute())
-			return false;
-		
-		// restore save_0 and check
-		if (!restore_save0(save_0))
-			return false;
+	int save_file_fd = open(file_name, O_RDONLY, S_IRUSR | S_IWUSR); // set fd for file
 	
-		return true;
-	}
+	if (save_file_fd == -1) // open() failed
+		return false;
 
-	return false;
+	dup2(save_file_fd, 0); // change fd for file to [0]
+	
+	close(save_file_fd); // close fd for file
+	
+	if (!leftNode->execute())
+		return false;
+	
+	dup2(save_0, 0); // change what [0] was back to [0]
+	
+	close(save_0); // close
+	return true;
 }
 
 void Input::display(){
