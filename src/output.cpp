@@ -65,7 +65,7 @@ bool Output::execute(){
 
 void Output::display(){
     leftNode->display();
-    std::cout << ">" << std::endl;
+    std::cout << "|" << std::endl;
     rightNode->display();
 }
 
