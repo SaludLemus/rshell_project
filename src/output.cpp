@@ -23,44 +23,41 @@ bool Output::execute(){
 	if (!leftNode || !rightNode)
 		return false;
 	
-	int save_1 = dup(1); // save [1]
-	int save_file_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC); // set fd for file
+	//int save_1 = dup(1); // save [1]
+	//int save_file_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC); // set fd for file
 	
-	if (save_file_fd == -1)
-		return false;
-	
-	dup2(save_file_fd, 1);
-	close(save_file_fd);
-	leftNode->execute();
-	dup2(save_1, 1);
-	close(save_1);
-	
-		//int save_1 = dup(1); // save [1]
-		// check dup()
-		//if (!check_dup(save_1))
-		//	return false;
-		//close(1);
+	//if (save_file_fd == -1)
 		//return false;
-		// check close() and close [1]
-		//if (!check_close())
-			//return false;
-		//cout << "AAA" << endl;
+	
+	//dup2(save_file_fd, 1);
+	//close(save_file_fd);
+	//leftNode->execute();
+	//dup2(save_1, 1);
+	//close(save_1);
+	
+	int save_1 = dup(1); // save [1]
+	
+	//check dup()
+	if (!check_dup(save_1))
+		return false;
 		
-		//cout << "ED" << endl;
-		// set fd for file to [1] via open()
-		//if (!change_output())
-			//return false;
+	 //check close() and close [1]
+	if (!check_close())
+		return false;
 		
-		// check execute()
-		//if (!leftNode->execute()) // child failed
-			//return false;
+	// set fd for file to [1] via open()
+	if (!change_output())
+		return false;
 		
-		// restore save_1 and check
-	//	if (!restore_save1(save_1))
-			//return false;
+	// check execute()
+	if (!leftNode->execute()) // child failed
+		return false;
+		
+	// restore save_1 and check
+	if (!restore_save1(save_1))
+		return false;
 			
-		return true;
-	//return false;
+	return true;
 }
 
 void Output::display(){
