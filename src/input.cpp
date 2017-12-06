@@ -30,15 +30,20 @@ bool Input::execute(){
 		
 	int save_file_fd = open(file_name, O_RDONLY, S_IRUSR | S_IWUSR); // set fd for file
 	
-	if (save_file_fd == -1) // open() failed
+	if (save_file_fd == -1) {// open() failed
+		close(save_0);
 		return false;
+	}
 
 	dup2(save_file_fd, 0); // change fd for file to [0]
 	
 	close(save_file_fd); // close fd for file
 	
-	if (!leftNode->execute())
+	if (!leftNode->execute()) {
+		dup2(save_0, 0);
+		close(save_0);
 		return false;
+	}
 	
 	dup2(save_0, 0); // change what [0] was back to [0]
 	

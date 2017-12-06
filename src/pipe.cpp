@@ -36,14 +36,22 @@ bool Pipe::execute() {
 	close(fds[0]); // close
 	close(fds[1]);
 	
-	if (!leftNode->execute()) // left child
+	if (!leftNode->execute()) {// left child
+		dup2(save_1, 1); // close
+		close(save_1);
+		dup2(save_0, 0);
+		close(save_0);
 		return false;
+	}
 	
 	dup2(save_1, 1); // set new [1] to old [1]
 	close(save_1); // close
 	
-	if (!rightNode->execute()) // right child
+	if (!rightNode->execute()) {// right child
+		dup2(save_0, 0); // close
+		close(save_0);
 		return false;
+	}
 		
 	dup2(save_0, 0); // set new [0] to old[0]
 	close(save_0);

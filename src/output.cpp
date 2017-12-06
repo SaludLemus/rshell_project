@@ -28,20 +28,26 @@ bool Output::execute(){
 		return false;
 		
 	int save_file_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR); // set fd for file
-	
-	if (save_file_fd == -1) // open() failed
+	//cout << "OPENING" << output_file << endl;
+	if (save_file_fd == -1) {// open() failed
+		close(save_1);
 		return false;
+	}
 	
 	dup2(save_file_fd, 1); // change fd for file to [1]
 	
 	close(save_file_fd); // close fd for file
 	
-	if (!leftNode->execute())
+	if (!leftNode->execute()) {
+		dup2(save_1, 1);
+		close(save_1);
 		return false;
+	}
 	
 	dup2(save_1, 1); // change what [1] was back to [1]
 	
 	close(save_1); // close fd that was opened
+	//cout << "TRUE" << endl;
 	return true;
 }
 
