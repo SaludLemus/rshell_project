@@ -17,23 +17,9 @@ Output::~Output(){output_file = 0;}
 
 bool Output::execute(){
 	output_file = rightNode->getCommand();
-	//cout << "FILENAME: " << rightNode->getCommand() << endl;
-	//cout << "LEFT SIDE: " << leftNode->getCommand() << endl;
 	
 	if (!leftNode || !rightNode)
 		return false;
-	
-	//int save_1 = dup(1); // save [1]
-	//int save_file_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC); // set fd for file
-	
-	//if (save_file_fd == -1)
-		//return false;
-	
-	//dup2(save_file_fd, 1);
-	//close(save_file_fd);
-	//leftNode->execute();
-	//dup2(save_1, 1);
-	//close(save_1);
 	
 	int save_1 = dup(1); // save [1]
 	
@@ -41,21 +27,47 @@ bool Output::execute(){
 	if (!check_dup(save_1))
 		return false;
 		
-	 //check close() and close [1]
-	if (!check_close())
+	int save_file_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC); // set fd for file
+	
+	if (save_file_fd == -1) // open() failed
 		return false;
+	
+	dup2(save_file_fd, 1); // change fd for file to [1]
+	
+	close(save_file_fd); // close fd for file
+	
+	if (!leftNode->execute())
+		return false;
+	
+	dup2(save_1, 1); // change what [1] was back to [1]
+	
+	close(save_1); // close fd that was opened
+	//int save_file_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC); // set fd for file
+	
+	//if (save_file_fd == -1)
+		//return false;
+	
+	//dup2(save_1, 1);
+	//close(save_1);
+	
+	//int save_1 = dup(1); // save [1]
+	
+		
+	 //check close() and close [1]
+	//if (!check_close())
+	//	return false;
 		
 	// set fd for file to [1] via open()
-	if (!change_output())
-		return false;
+	//if (!change_output())
+	//	return false;
 		
 	// check execute()
-	if (!leftNode->execute()) // child failed
-		return false;
+	//if (!leftNode->execute()) // child failed
+	//	return false;
 		
 	// restore save_1 and check
-	if (!restore_save1(save_1))
-		return false;
+	//if (!restore_save1(save_1))
+	//	return false;
 			
 	return true;
 }
