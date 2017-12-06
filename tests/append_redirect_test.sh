@@ -19,3 +19,6 @@ TEST10="exit"
 
 mkdir -p append_test
 echo -e "$TEST1\n$TEST2\n$TEST3\n$TEST4\n$TEST5\n$TEST6\n$TEST7\n$TEST8\n$TEST9\n$TEST10\n" | ./bin/rshell
+
+# BUGS
+# APPENDS DATA INTO A AND B WHEN IT SHOULDNT
