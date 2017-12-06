@@ -27,7 +27,7 @@ bool Output::execute(){
 	if (!check_dup(save_1))
 		return false;
 		
-	int save_file_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC); // set fd for file
+	int save_file_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC, S_IRWXU); // set fd for file
 	
 	if (save_file_fd == -1) // open() failed
 		return false;
