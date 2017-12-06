@@ -8,43 +8,59 @@
 #include <errno.h>
 #include <iostream>
 using namespace std;
-Output::Output(){file_name = 0; }
+Output::Output(){output_file = 0; }
 
-Output::Output(Base* ln, Base* rn){//file_name = rn->getCommand(); 
-	file_name  = 0;
-	}
+Output::Output(Base* ln, Base* rn){output_file = rn->getCommand();
+}
 
-Output::~Output(){file_name = 0;}
+Output::~Output(){output_file = 0;}
 
 bool Output::execute(){
-	//leftNode->execute();
-	//rightNode->execute();
-    if (leftNode && rightNode) { // childs exists
-		int save_1 = dup(1); // save [1]
-		
+	output_file = rightNode->getCommand();
+	//cout << "FILENAME: " << rightNode->getCommand() << endl;
+	//cout << "LEFT SIDE: " << leftNode->getCommand() << endl;
+	
+	if (!leftNode || !rightNode)
+		return false;
+	
+	int save_1 = dup(1); // save [1]
+	int save_file_fd = open(output_file, O_WRONLY | O_CREAT | O_TRUNC); // set fd for file
+	
+	if (save_file_fd == -1)
+		return false;
+	
+	dup2(save_file_fd, 1);
+	close(save_file_fd);
+	leftNode->execute();
+	dup2(save_1, 1);
+	close(save_1);
+	
+		//int save_1 = dup(1); // save [1]
 		// check dup()
-		if (!check_dup(save_1))
-			return false;
-		
+		//if (!check_dup(save_1))
+		//	return false;
+		//close(1);
+		//return false;
 		// check close() and close [1]
-		if (!check_close())
-			return false;
+		//if (!check_close())
+			//return false;
+		//cout << "AAA" << endl;
 		
+		//cout << "ED" << endl;
 		// set fd for file to [1] via open()
-		if (!change_output())
-			return false;
+		//if (!change_output())
+			//return false;
 		
 		// check execute()
-		if (!leftNode->execute()) // child failed
-			return false;
-
+		//if (!leftNode->execute()) // child failed
+			//return false;
+		
 		// restore save_1 and check
-		if (!restore_save1(save_1))
-			return false;
+	//	if (!restore_save1(save_1))
+			//return false;
 			
 		return true;
-	}
-	return false;
+	//return false;
 }
 
 void Output::display(){
@@ -84,7 +100,7 @@ bool Output::check_close() {
 bool Output::change_output() {
 	// open(const char* FILE_NAME, INT FLAGS)
 	// file will be write only and will be created if DNE and truncate to zero bytes
-	if (open(file_name, O_WRONLY | O_CREAT | O_TRUNC) == -1) { // open() failed and errno is set
+	if (open(output_file, O_WRONLY | O_CREAT | O_TRUNC) == -1) { // open() failed and errno is set
 		if (errno == EACCES)
 			cout << "File access not allowed; File does not exist." << endl;
 		if (errno == ELOOP)
