@@ -18,9 +18,20 @@ You are set!
 <h4 id="Logic Connectors">Logic Connectors</h4>
 Add logic connectors to incorporate, well, logic into a stream of executables.
 
-;     The following command will be executed regardless of the previous' result.<br>
-&&    The following command will be executed if the previous succeeded.<br>
-||    The following command will be executed if the previous failed.
+<table style="width:100%">
+  <tr>
+  	<td>;</td>
+    <td>The following command will be executed regardless of the previous' result.</td>
+  </tr>
+  <tr>
+    <td>&&</td>
+    <td>The following command will be executed if the previous succeeded.</td>
+  </tr>
+  <tr>
+    <td>||</td>
+    <td>The following command will be executed if the previous failed.</td>
+  </tr>
+</table>
 
     $ mkdir bin; echo Continue as normal.
     $ mkdir bin && echo Created new directory.
