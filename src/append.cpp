@@ -15,6 +15,9 @@ Append::Append(Base* ln, Base* rn){file_name = rn->getCommand();}
 Append::~Append(){file_name = 0;}
 
 bool Append::execute(){
+	if (!file_name)
+		file_name = rn->getCommand();
+	
 	if (leftNode && rightNode) { // child exists
 		int save_1 = dup(1); // save [1]
 		
