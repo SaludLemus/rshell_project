@@ -5,7 +5,7 @@
 
 class Output: public Connector{
     private:
-    char* file_name;
+    char* output_file;
 	public:
         Output();
         Output(Base*, Base*);
