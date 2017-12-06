@@ -3,33 +3,29 @@
 <h2 id="Overview">Overview</h2>
 
 <h3 id="Introduction">Introduction</h3>
-Run multiple PATH executables with success and failure logic connectors between executables alongside commenting.
+Run multiple PATH executables with logic and I/O redirection connectors alongside commenting and precedence.
 
 <h3 id="Getting Started">Getting Started</h3>
-Getting started is very easy. Once you are in the main directory, execute the following command.
+Getting started is very easy. Once you are in the main directory, execute the following command in the terminal.
 
     make
+    ./bin/rshell
     
-And that is it. An executable labeled "rshell" will appear in the bin directory. You are set!
+You are set!
 
-
-<h3 id="Syntax">Syntax</h3>
+<h3 id="How to Use">How to Use</h3>
 
 <h4 id="Logic Connectors">Logic Connectors</h4>
-If you desire to add logic connectors in your executables, then use "&&", "||", and ";" between commands. For example:
+Add logic connectors to incorporate, well, logic into a stream of executables.
 
-    $ mkdir bin; echo Directory already exists.
-    $ mkdir bin && echo Created new directory
+;     The following command will be executed regardless of the previous' result.<br>
+&&    The following command will be executed if the previous succeeded.<br>
+||    The following command will be executed if the previous failed.
+
+    $ mkdir bin; echo Continue as normal.
+    $ mkdir bin && echo Created new directory.
     $ mkdir bin || echo Directory already exists.
     
-&&  The following command will be executed if the previous succeeded.
-
-||  The following command will be executed if the previous failed.
-
-;   The following command will be executed regardless of the previous' result.
-
-There are no limits to the number of commands that can be chained using these and any other connectors.
-
 <h4 id="Parentheses">Parentheses</h4>
 Use precedence operators by using parentheses (), this will change the precedence of the returns of commands, connectors, and chains of connectors. For example:
 
