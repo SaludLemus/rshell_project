@@ -43,10 +43,9 @@ bool Append::execute(){
 		close(save_1);
 		return false;
 	}
-	// FILE IS ALREADY IN APPEND MODE
 	
-	// LOOP THROUGH IF THERE ARE MORE FILES
-	char* add_cmd[3] = {0};
+	// file is already in append mode
+	char* add_cmd[3] = {0}; // execute remaining files
 	add_cmd[0] = leftNode->getCommand();
 	add_cmd[1] = rightNode->currentCommand();
 	add_cmd[2] = 0;

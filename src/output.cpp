@@ -70,7 +70,7 @@ bool Output::execute(){
 	
 	close(save_file_fd); // close fd for file
 	
-	char* add_cmd[3] = {0};
+	char* add_cmd[3] = {0}; // execute remaining files
 	add_cmd[0] = leftNode->getCommand();
 	add_cmd[1] = rightNode->currentCommand();
 	add_cmd[2] = 0;
