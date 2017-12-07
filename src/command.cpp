@@ -75,13 +75,16 @@ void Command::display(){
 }
 
 char* Command::getCommand(){
+	while (commandArray[cur_cmd] != NULL) {
+		++cur_cmd;
+	}
+	
 	return commandArray[0];
 }
 
 char* Command::currentCommand() {
-	if (commandArray && commandArray[cur_cmd + 1] != NULL) {
-		++cur_cmd;
-		return commandArray[cur_cmd];
+	if (cur_cmd != 0 && cur_cmd - 1 != 0) {
+		return commandArray[--cur_cmd];
 	}
 	return NULL;
 }
