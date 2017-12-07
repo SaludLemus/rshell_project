@@ -16,6 +16,7 @@ class Output: public Connector{
         bool check_close();
         bool change_output();
         bool restore_save1(int);
+        bool execute(char**);
 };
 
 #endif
