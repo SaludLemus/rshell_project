@@ -52,12 +52,8 @@ bool Append::execute(){
 	add_cmd[2] = 0;
 	
 	while(add_cmd[1] != NULL || add_cmd[1] != 0) {
-		if (execute(add_cmd)) { // true
-			add_cmd[1] = rightNode->currentCommand();
-		}
-		else{ // failed
-			break;
-		}
+		execute(add_cmd);
+		add_cmd[1] = rightNode->currentCommand();
 	}
 	
 	
