@@ -15,7 +15,7 @@ Getting started is very easy. Once you are in the main directory, execute the fo
     
 You are set!
 
-<h3 id="How to Use the Connectors">How to Use the Connectors</h3>
+<h3 id="Connectors">Connectors</h3>
 
 <h4 id="Logic">Logic</h4>
 Add logic connectors to incorporate, well, logic into a stream of executables.
