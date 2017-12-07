@@ -16,17 +16,20 @@ Input::Input(Base* ln, Base* rn){file_name = rn->getCommand();}
 Input::~Input(){file_name = 0;}
 
 bool Input::execute(){
-	if (!leftNode || !rightNode)
+	if (!leftNode || !rightNode) {
 		return false;
+	}
 		
-	if (!file_name)
+	if (!file_name) {
 		file_name = rightNode->getCommand();
+	}
 		
 	int save_0 = dup(0); // save [0]
 	
 	//check dup()
-	if (!check_dup(save_0))
+	if (!check_dup(save_0)) {
 		return false;
+	}
 		
 	int save_file_fd = open(file_name, O_RDONLY, S_IRUSR | S_IWUSR); // set fd for file
 	

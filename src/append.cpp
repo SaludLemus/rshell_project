@@ -15,14 +15,16 @@ Append::Append(Base* ln, Base* rn){file_name = rn->getCommand();}
 Append::~Append(){file_name = 0;}
 
 bool Append::execute(){
-	if (!file_name)
+	if (!file_name) {
 		file_name = rightNode->getCommand();
+	}
 	
 	int save_1 = dup(1); // save [1]
 	
 	//check dup()
-	if (!check_dup(save_1))
+	if (!check_dup(save_1)) {
 		return false;
+	}
 		
 	int save_file_fd = open(file_name, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR); // set fd for file
 	
@@ -44,7 +46,8 @@ bool Append::execute(){
 	dup2(save_1, 1); // change what [1] was back to [1]
 	
 	close(save_1); // close fd that was opened
-	return false;
+	
+	return true;
 }
 
 void Append::display(){

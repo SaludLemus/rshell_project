@@ -17,8 +17,9 @@ Pipe::~Pipe(){ }
 
 // assumes class has a left and right child
 bool Pipe::execute() {
-	if (!leftNode || !rightNode)
+	if (!leftNode || !rightNode) {
 		return false;
+	}
 		
 	 // both childs exist
 	int save_0 = dup(0); // save [0] and [1]
@@ -26,8 +27,9 @@ bool Pipe::execute() {
 	int fds[2]; // for pipe()
 	
 	// check dup()
-	if (!check_dup(save_0, save_1))
+	if (!check_dup(save_0, save_1)) {
 		return false;
+	}
 	
 	pipe(fds); // pipe()
 	dup2(fds[0], 0); // fds[0] to [0]
