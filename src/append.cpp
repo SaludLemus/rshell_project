@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <stdio.h>
 #include <iostream>
 using namespace std;
 Append::Append(){file_name = 0; }
@@ -42,6 +43,23 @@ bool Append::execute(){
 		close(save_1);
 		return false;
 	}
+	// FILE IS ALREADY IN APPEND MODE
+	
+	// LOOP THROUGH IF THERE ARE MORE FILES
+	char* add_cmd[3] = {0};
+	add_cmd[0] = leftNode->getCommand();
+	add_cmd[1] = rightNode->currentCommand();
+	add_cmd[2] = 0;
+	
+	while(add_cmd[1] != NULL || add_cmd[1] != 0) {
+		if (execute(add_cmd)) { // true
+			add_cmd[1] = rightNode->currentCommand();
+		}
+		else{ // failed
+			break;
+		}
+	}
+	
 	
 	dup2(save_1, 1); // change what [1] was back to [1]
 	
@@ -120,4 +138,47 @@ bool Append::restore_save1(int save_1) {
 		return false;
 	}
 	return true;
+}
+
+bool Append::execute(char** commandArray){
+	if (commandArray== 0) // points to char* that is mem. loc. 0
+		return false;
+	
+	pid_t child_pid; // for fork()
+	int child_status; // for waitpid()
+	
+	child_pid = fork(); // create child process fork() returns an integer (0 == child)
+		
+	if (child_pid == 0) { // child will run cmd
+		
+		if (execvp(commandArray[0], commandArray) < 0) {// returns a negative value if failed to execute
+			perror("ERROR: Unknown command"); // error
+			//cout << "ERROR in child process returning to parent process" << endl;
+			//cout << "ERROR" << endl;
+			exit(EXIT_FAILURE);
+		}
+	}
+		
+	else if (child_pid == -1) {// fork failed
+		perror("ERROR: Unable to fork a child process"); // error message
+		exit(EXIT_FAILURE);
+	}
+	else { // parent has to wait for the child to be done
+		pid_t check_pid;
+		do {
+			check_pid = waitpid(child_pid, &child_status, 0);
+			if (errno == EINTR) {// will set errno to EINTR if waitpid returns -1
+				perror("ERROR: Function was interrupted");
+				exit(EXIT_FAILURE);
+				return false;
+			}
+			else if (WIFEXITED(child_status) && WEXITSTATUS(child_status) == EXIT_FAILURE) { // child process did not execute
+				//cout << "returning false" << endl;
+				return false;
+			}
+				
+		} while(check_pid != child_pid);
+	}
+	
+    return true;
 }

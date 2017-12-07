@@ -6,7 +6,7 @@
 class Command: public Base{
 	protected:
 		char** commandArray;
-	
+		int cur_cmd;
 	public:
         Command();
         Command(char**);
@@ -14,6 +14,7 @@ class Command: public Base{
         bool execute();
         void display();
         char* getCommand();
+        char* currentCommand();
 };
 
 #endif

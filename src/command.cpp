@@ -10,10 +10,12 @@ using namespace std;
 Command::Command(){
     commandArray = new char*[1];
     commandArray[0] = NULL;
+    cur_cmd = 0;
 }
 
 Command::Command(char** cmdArray){
     commandArray = cmdArray;
+    cur_cmd = 0;
 }
 
 Command::~Command(){
@@ -27,7 +29,6 @@ bool Command::execute(){
 	pid_t child_pid; // for fork()
 	int child_status; // for waitpid()
 	
-	//checkExit(commandArray[0]); // exit prog if exit exists
 	child_pid = fork(); // create child process fork() returns an integer (0 == child)
 		
 	if (child_pid == 0) { // child will run cmd
@@ -35,6 +36,7 @@ bool Command::execute(){
 		if (execvp(commandArray[0], commandArray) < 0) {// returns a negative value if failed to execute
 			perror("ERROR: Unknown command"); // error
 			//cout << "ERROR in child process returning to parent process" << endl;
+			//cout << "ERROR" << endl;
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -59,7 +61,7 @@ bool Command::execute(){
 				
 		} while(check_pid != child_pid);
 	}
-	//cout << "returning true" << endl;
+	
     return true;
 }
 
@@ -74,4 +76,12 @@ void Command::display(){
 
 char* Command::getCommand(){
 	return commandArray[0];
+}
+
+char* Command::currentCommand() {
+	if (commandArray && commandArray[cur_cmd + 1] != NULL) {
+		++cur_cmd;
+		return commandArray[cur_cmd];
+	}
+	return NULL;
 }
