@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <stdio.h>
 #include <iostream>
 using namespace std;
 
@@ -19,9 +20,20 @@ bool Input::execute(){
 	if (!leftNode || !rightNode) {
 		return false;
 	}
-		
-	if (!file_name) {
+
+	if (leftNode->currentCommand() != NULL) { // files exist on the left side
+		// set file_name to first file on the right side
 		file_name = rightNode->getCommand();
+	}
+	else { // left side has no files
+		// check right side if more files exist
+		char* next_file = rightNode->currentCommand();
+		if (next_file != NULL) { // more files exist, so ignore first file
+			file_name = next_file;
+		}
+		else{ // only one file exists
+			file_name = rightNode->getCommand();
+		}
 	}
 		
 	int save_0 = dup(0); // save [0]
@@ -51,6 +63,31 @@ bool Input::execute(){
 	dup2(save_0, 0); // change what [0] was back to [0]
 	
 	close(save_0); // close
+
+	char* add_cmd[3] = {0}; // execute remaining files, if any
+	add_cmd[0] = leftNode->getCommand();
+	add_cmd[1] = rightNode->currentCommand();
+	add_cmd[2] = 0;
+
+	while(add_cmd[1] != NULL || add_cmd[1] != 0) {
+		save_0 = dup(0); // set fds
+
+		if(!check_dup(save_0))
+			return false;
+
+		save_file_fd = open(add_cmd[1], O_RDONLY, S_IRUSR | S_IWUSR); // open file
+
+		dup2(save_file_fd, 0);
+		close(save_file_fd);
+
+		execute(add_cmd); // execute
+
+		dup2(save_0, 0); // restore
+		close(save_0);
+
+		add_cmd[1] = rightNode->currentCommand();
+	}
+
 	return true;
 }
 
@@ -123,4 +160,47 @@ bool Input::restore_save0(int save_0) {
 		return false;
 	}
 	return true;
+}
+
+bool Input::execute(char** commandArray){
+	if (commandArray== 0) // points to char* that is mem. loc. 0
+		return false;
+
+	pid_t child_pid; // for fork()
+	int child_status; // for waitpid()
+
+	child_pid = fork(); // create child process fork() returns an integer (0 == child)
+
+	if (child_pid == 0) { // child will run cmd
+
+		if (execvp(commandArray[0], commandArray) < 0) {// returns a negative value if failed to execute
+			perror("ERROR: Unknown command"); // error
+			//cout << "ERROR in child process returning to parent process" << endl;
+			//cout << "ERROR" << endl;
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	else if (child_pid == -1) {// fork failed
+		perror("ERROR: Unable to fork a child process"); // error message
+		exit(EXIT_FAILURE);
+	}
+	else { // parent has to wait for the child to be done
+		pid_t check_pid;
+		do {
+			check_pid = waitpid(child_pid, &child_status, 0);
+			if (errno == EINTR) {// will set errno to EINTR if waitpid returns -1
+				perror("ERROR: Function was interrupted");
+				exit(EXIT_FAILURE);
+				return false;
+			}
+			else if (WIFEXITED(child_status) && WEXITSTATUS(child_status) == EXIT_FAILURE) { // child process did not execute
+				//cout << "returning false" << endl;
+				return false;
+			}
+
+		} while(check_pid != child_pid);
+	}
+
+    return true;
 }

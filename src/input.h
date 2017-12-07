@@ -15,6 +15,7 @@ class Input: public Connector{
         bool check_close();
         bool change_input();
         bool restore_save0(int);
+        bool execute(char**);
 };
 
 #endif
