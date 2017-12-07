@@ -76,12 +76,8 @@ bool Output::execute(){
 	add_cmd[2] = 0;
 	
 	while(add_cmd[1] != NULL || add_cmd[1] != 0) {
-		if (execute(add_cmd)) { // true
-			add_cmd[1] = rightNode->currentCommand();
-		}
-		else{ // failed
-			break;
-		}
+		execute(add_cmd);
+		add_cmd[1] = rightNode->currentCommand();
 	}
 	
 	dup2(save_1, 1); // change what [1] was back to [1]
