@@ -28,8 +28,21 @@ bool Input::execute(){
 	else { // left side has no files
 		// check right side if more files exist
 		char* next_file = rightNode->currentCommand();
+
 		if (next_file != NULL) { // more files exist, so ignore first file
-			file_name = next_file;
+			int first_file = open(rightNode->getCommand(), O_RDONLY, S_IRUSR | S_IWUSR);
+
+			if (first_file == -1) { // file does not exist
+				perror("File does not exist.");
+				return false;
+			}
+			else {
+				if (close(first_file) == -1) {
+					perror("File does not exist.");
+					return false;
+				}
+				file_name = next_file;
+			}
 		}
 		else{ // only one file exists
 			file_name = rightNode->getCommand();
@@ -42,50 +55,62 @@ bool Input::execute(){
 	if (!check_dup(save_0)) {
 		return false;
 	}
-		
+
 	int save_file_fd = open(file_name, O_RDONLY, S_IRUSR | S_IWUSR); // set fd for file
 	
 	if (save_file_fd == -1) {// open() failed
-		close(save_0);
-		return false;
-	}
+		perror("Error: File does not exist");
 
-	dup2(save_file_fd, 0); // change fd for file to [0]
-	
-	close(save_file_fd); // close fd for file
-	
-	if (!leftNode->execute()) {
-		dup2(save_0, 0);
-		close(save_0);
-		return false;
-	}
-	
-	dup2(save_0, 0); // change what [0] was back to [0]
-	
-	close(save_0); // close
-
-	char* add_cmd[3] = {0}; // execute remaining files, if any
-	add_cmd[0] = leftNode->getCommand();
-	add_cmd[1] = rightNode->currentCommand();
-	add_cmd[2] = 0;
-
-	while(add_cmd[1] != NULL || add_cmd[1] != 0) {
-		save_0 = dup(0); // set fds
-
-		if(!check_dup(save_0))
+		if (file_name == rightNode->getCommand()) { // terminate if first file DNE
+			close(save_0);
 			return false;
+		}
+	}
+	
+	if (save_file_fd != -1) {
+		dup2(save_file_fd, 0); // change fd for file to [0]
 
-		save_file_fd = open(add_cmd[1], O_RDONLY, S_IRUSR | S_IWUSR); // open file
+		close(save_file_fd); // close fd for file
+	
+		if (!leftNode->execute()) {
+			dup2(save_0, 0);
+			close(save_0);
+			return false;
+		}
+	
+		dup2(save_0, 0); // change what [0] was back to [0]
+	
+		close(save_0); // close
+	}
 
-		dup2(save_file_fd, 0);
-		close(save_file_fd);
+	char* add_cmd[2] = {0}; // execute remaining files, if any
+	add_cmd[0] = leftNode->getCommand();
+//	add_cmd[1] = rightNode->currentCommand();
+	add_cmd[1] = 0;
+	char* cur_cmd = rightNode->currentCommand();
 
-		execute(add_cmd); // execute
+	while(cur_cmd != NULL) {
+		save_file_fd = open(cur_cmd, O_RDONLY, S_IRUSR | S_IWUSR); // open file
 
-		dup2(save_0, 0); // restore
-		close(save_0);
+		if (save_file_fd == -1) { // open failed
+			perror("File does not exist.");
+		}
+		else {
+			save_0 = dup(0); // set fds
 
-		add_cmd[1] = rightNode->currentCommand();
+			if(!check_dup(save_0))
+				return false;
+
+			dup2(save_file_fd, 0);
+			close(save_file_fd);
+
+			execute(add_cmd); // execute
+
+			dup2(save_0, 0); // restore
+			close(save_0);
+		}
+
+		cur_cmd = rightNode->currentCommand(); // get next command
 	}
 
 	return true;
