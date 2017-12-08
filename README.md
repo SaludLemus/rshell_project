@@ -5,6 +5,7 @@
 <h3 id="Introduction">Introduction</h3>
 Run multiple PATH executables with logic and I/O redirection connectors alongside commenting and precedence. 
 
+
 This was created by two UCR students, Jose Garcia and Salud Salad, as a sememster long CS project. Thanks to UCR, professors, and the library for giving us the resources and knowledge to accomplish this project.
 
 <h3 id="Getting Started">Getting Started</h3>
@@ -87,20 +88,22 @@ If you want to use an equivalent terminal command of "test", "[ ]" can be explic
     $ [ -e /home/user/Documents ]
 
 
-<h2 id="How it works">How it works</h2>
-The rshell utilizes a binary tree to store its commands, like so:
+<h2 id="How the rshell works">How the rshell works</h2>
+The rshell is a two step procedure.
 
-    $ echo hello world && mkdir bin || echo this is a test
+First, the parser will attempt to create a binary tree from the rshell terminal input. Connectors will become the root nodes while the executables will become the leaf nodes.
 
-The commands will be executed in the standard inorder procedure.
+<img src="https://i.imgur.com/u8su4tv.png" alt="Binary Tree 1">
 
-![tree_diagram](https://user-images.githubusercontent.com/22006152/32976075-cc52a326-cc07-11e7-9f01-858e5c9ac62a.png)
+The parser follows a strict but repeative pattern until it reaches the end of line. 
 
-When parathesis are involved, the parser will create roots based on parathesised commands and simply set them as regular nodes, like so:
+GetCommand() -> GetConnector() -> GetCommand() -> GetConnector() -> GetCommand() -> ... -> GetCommand()
 
-    $ echo A && (echo B || echo C)
+In the case of precedence, the parser will recursively create a new binary tree from the contents inside the parathesis and the result will be treated as a Command.
 
-![tree_diagram_with_parentheses](https://user-images.githubusercontent.com/22006152/32976154-dd5ab324-cc08-11e7-9a37-e7aa46fe1e38.png)
+<img src="https://i.imgur.com/lgaguHI.png" alt="Binary Tree 2">
+
+If the parser fails at any point, rshell will exit immediately and no executable will be called.
 
 <h2 id="Known Bugs">Known Bugs</h2>
 
@@ -110,4 +113,4 @@ List of known bugs:
 
 Syntax is very strict. Extra spaces will crash the parser.
 
-An unequal amount of parentheses will also crash the parser.
+An extra semicolon in the end of a line will crash the parser.
