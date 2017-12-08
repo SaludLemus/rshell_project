@@ -3,10 +3,8 @@
 <h2 id="Overview">Overview</h2>
 
 <h3 id="Introduction">Introduction</h3>
-Run multiple PATH executables with logic and I/O redirection connectors alongside commenting and precedence. 
-
-
-This was created by two UCR students, Jose Garcia and Salud Salad, as a sememster long CS project. Thanks to UCR, professors, and the library for giving us the resources and knowledge to accomplish this project.
+<p>Run multiple PATH executables with logic and I/O redirection connectors alongside commenting and precedence. </p>
+<p>This was created by two UCR students, Jose Garcia and Salud Salad, as a sememster long CS project. Thanks to UCR, professors, and the library for giving us the resources and knowledge to accomplish this project.</p>
 
 <h3 id="Getting Started">Getting Started</h3>
 Getting started is very easy. Once you are in the main directory, execute the following command in the terminal.
@@ -94,22 +92,18 @@ First, the parser will attempt to create a binary tree from the rshell terminal 
 
 <img src="https://i.imgur.com/u8su4tv.png" alt="Binary Tree 1">
 
-The parser follows a strict but repeative pattern until it reaches the end of line. 
-
-GetCommand() -> GetConnector() -> GetCommand() -> GetConnector() -> GetCommand() -> ... -> GetCommand()
-
-In the case of precedence, the parser will recursively create a new binary tree from the contents inside the parathesis and the result will be treated as a Command.
+<p>The parser follows a strict but repeative pattern until it reaches the end of line.</p>
+<p>GetCommand() -> GetConnector() -> GetCommand() -> GetConnector() -> GetCommand() -> ... -> GetCommand()</p>
+<p>In the case of precedence, the parser will recursively create a new binary tree from the contents inside the parathesis and the result will be treated as a Command.</p>
 
 <img src="https://i.imgur.com/lgaguHI.png" alt="Binary Tree 2">
 
 If the parser fails at any point, rshell will exit immediately and no executable will be called.
 
 <h3 id="Execute">Execute</h3>
-Once the parser returns successfully, execute() will be called from the root node. From there, the Base nodes will run execute in the inorder pattern. As executables are always leaf nodes, they will be performing the execvp() to run its commands and flags.
-
-While logic connectors will follow the inorder pattern, I/O redirection connectors divert by opening files based on the right node's command data. As such, precedence is impossible with I/O redirection.
-
-Execute() will not stop until it reaches finishes back in the root node. So while the parser will stop improper syntax, the execute will not stop at any mispellings. Be sure to proofread your rshell scripts!
+<p>Once the parser returns successfully, execute() will be called from the root node. From there, the Base nodes will run execute in the inorder pattern. As executables are always leaf nodes, they will be performing the execvp() to run its commands and flags.</p>
+<p>While logic connectors will follow the inorder pattern, I/O redirection connectors divert by opening files based on the right node's command data. As such, precedence is impossible with I/O redirection.</p>
+<p>Execute() will not stop until it reaches finishes back in the root node. So while the parser will stop improper syntax, the execute will not stop at any mispellings. Be sure to proofread your rshell scripts!</p>
 
 
 <h2 id="Known Bugs">Known Bugs</h2>
