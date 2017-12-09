@@ -45,6 +45,16 @@ bool Append::execute(){
 	
 	close(save_file_fd); // close fd for file
 	
+	if (leftNode->getCommand() == 0) { // if left side is a connector ;, &&, ||, etc.
+		if (!leftNode->execute()) {
+			succeed = false;
+		}
+
+		dup2(save_1, 1);
+		close(save_1);
+		return succeed;
+	}
+
 	vector<char*> total_cmds; // will contain char* of left and right sides' files
 
 	// get left side's file
