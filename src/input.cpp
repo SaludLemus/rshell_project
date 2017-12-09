@@ -30,6 +30,26 @@ bool Input::execute(){
 		return false;
 	}
 
+	if (leftNode->getCommand() == 0) { // if left side is a connector ;, &&, ||, etc.
+		int save_0 = dup(0);
+
+		if (!check_dup(save_0)) { // dup() failed
+			close(first_file);
+			return false;
+		}
+
+		dup2(first_file, 0);
+		close(first_file);
+
+		if (!leftNode->execute()) {
+			succeed = false;
+		}
+
+		dup2(save_0, 0);
+		close(save_0);
+		return succeed;
+	}
+
 	vector<char*> total_cmds; // will contain char* of left and right sides' files
 
 	// get left side's file
@@ -92,9 +112,11 @@ bool Input::execute(){
 }
 
 void Input::display(){
+	cout << "BEGIN" << endl;
     leftNode->display();
     std::cout << "<" << std::endl;
     rightNode->display();
+    cout << "END" << endl;
 }
 
 bool Input::check_dup(int save_0) {
