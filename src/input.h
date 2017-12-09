@@ -12,9 +12,6 @@ class Input: public Connector{
         bool execute();
         void display();
         bool check_dup(int);
-        bool check_close();
-        bool change_input();
-        bool restore_save0(int);
         bool execute(char**);
 };
 

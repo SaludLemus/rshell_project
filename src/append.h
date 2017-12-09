@@ -12,9 +12,6 @@ class Append: public Connector{
         bool execute();
         void display();
         bool check_dup(int);
-        bool check_close();
-        bool change_output();
-        bool restore_save1(int);
         bool execute(char**);
 };
 

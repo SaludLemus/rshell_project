@@ -18,6 +18,7 @@ Input::Input(Base* ln, Base* rn){file_name = rn->getCommand();}
 Input::~Input(){file_name = 0;}
 
 bool Input::execute(){
+	bool succeed = true;
 	if (!leftNode || !rightNode) {
 		return false;
 	}
@@ -73,7 +74,9 @@ bool Input::execute(){
 	dup2(first_file, 0);
 	close(first_file);
 
-	execute(exec_cmds);
+	if (!execute(exec_cmds)) { // for && and ||
+		succeed = false;
+	}
 
 	int index = 0;
 	while (exec_cmds[index] != 0) { // set all to 0
@@ -85,7 +88,7 @@ bool Input::execute(){
 	dup2(save_0, 0);
 	close(save_0);
 
-	return true;
+	return succeed;
 }
 
 void Input::display(){
