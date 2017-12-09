@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 using namespace std;
 
 Input::Input(){file_name = 0;}
@@ -21,97 +22,68 @@ bool Input::execute(){
 		return false;
 	}
 
-	if (leftNode->currentCommand() != NULL) { // files exist on the left side
-		// set file_name to first file on the right side
-		file_name = rightNode->getCommand();
-	}
-	else { // left side has no files
-		// check right side if more files exist
-		char* next_file = rightNode->currentCommand();
-
-		if (next_file != NULL) { // more files exist, so ignore first file
-			int first_file = open(rightNode->getCommand(), O_RDONLY, S_IRUSR | S_IWUSR);
-
-			if (first_file == -1) { // file does not exist
-				perror("File does not exist.");
-				return false;
-			}
-			else {
-				if (close(first_file) == -1) {
-					perror("File does not exist.");
-					return false;
-				}
-				file_name = next_file;
-			}
-		}
-		else{ // only one file exists
-			file_name = rightNode->getCommand();
-		}
-	}
-		
-	int save_0 = dup(0); // save [0]
+	int first_file = open(rightNode->getCommand(), O_RDONLY, S_IRUSR | S_IWUSR);
 	
-	//check dup()
-	if (!check_dup(save_0)) {
+	if (first_file == -1) {
+		perror("File does not exist.");
 		return false;
 	}
 
-	int save_file_fd = open(file_name, O_RDONLY, S_IRUSR | S_IWUSR); // set fd for file
-	
-	if (save_file_fd == -1) {// open() failed
-		perror("Error: File does not exist");
+	vector<char*> total_cmds; // will contain char* of left and right sides' files
 
-		if (file_name == rightNode->getCommand()) { // terminate if first file DNE
-			close(save_0);
-			return false;
-		}
-	}
-	
-	if (save_file_fd != -1) {
-		dup2(save_file_fd, 0); // change fd for file to [0]
-
-		close(save_file_fd); // close fd for file
-	
-		if (!leftNode->execute()) {
-			dup2(save_0, 0);
-			close(save_0);
-			return false;
-		}
-	
-		dup2(save_0, 0); // change what [0] was back to [0]
-	
-		close(save_0); // close
+	// get left side's file
+	char* cur_cmd = leftNode->currentCommand();
+	while (cur_cmd != NULL) {
+		total_cmds.push_back(cur_cmd);
+		cur_cmd = leftNode->currentCommand();
 	}
 
-	char* add_cmd[2] = {0}; // execute remaining files, if any
-	add_cmd[0] = leftNode->getCommand();
-//	add_cmd[1] = rightNode->currentCommand();
-	add_cmd[1] = 0;
-	char* cur_cmd = rightNode->currentCommand();
-
-	while(cur_cmd != NULL) {
-		save_file_fd = open(cur_cmd, O_RDONLY, S_IRUSR | S_IWUSR); // open file
-
-		if (save_file_fd == -1) { // open failed
-			perror("File does not exist.");
-		}
-		else {
-			save_0 = dup(0); // set fds
-
-			if(!check_dup(save_0))
-				return false;
-
-			dup2(save_file_fd, 0);
-			close(save_file_fd);
-
-			execute(add_cmd); // execute
-
-			dup2(save_0, 0); // restore
-			close(save_0);
-		}
-
-		cur_cmd = rightNode->currentCommand(); // get next command
+	// get right side's file
+	cur_cmd = rightNode->currentCommand();
+	while (cur_cmd != NULL) {
+		total_cmds.push_back(cur_cmd);
+		cur_cmd = rightNode->currentCommand();
 	}
+	// create char** with size of cmd plus vector's size and add
+	int size_cmds = total_cmds.size() + 2;
+
+	char** exec_cmds = new char*[sizeof(char*) * size_cmds];
+	exec_cmds[0] = leftNode->getCommand(); // set [0] to command
+
+	for (unsigned int i = 0; i < total_cmds.size(); ++i) { // copy over char* to char**
+		exec_cmds[i + 1] = total_cmds.at(i);
+	}
+	exec_cmds[size_cmds - 1] = 0; // null term.
+
+	// change [0] to file of first file on the right side
+	int save_0 = dup(0);
+
+	if (!check_dup(save_0)) { // dup() failed
+		close(first_file);
+
+		int index = 0;
+		while (exec_cmds[index] != 0) { // set all to 0
+			exec_cmds[index] = 0;
+			++index;
+		}
+		delete[] exec_cmds; // dealloc mem.
+		return false;
+	}
+
+	dup2(first_file, 0);
+	close(first_file);
+
+	execute(exec_cmds);
+
+	int index = 0;
+	while (exec_cmds[index] != 0) { // set all to 0
+		exec_cmds[index] = 0;
+		++index;
+	}
+	delete[] exec_cmds; // dealloc mem.
+
+	dup2(save_0, 0);
+	close(save_0);
 
 	return true;
 }
@@ -128,60 +100,6 @@ bool Input::check_dup(int save_0) {
 			cout << "New fd is out of the allowed range." << endl;
 		
 		cout << "Dup() failed.)" << endl;
-		return false;
-	}
-	return true;
-}
-
-bool Input::check_close() {
-	if (close(0) == -1) { // close() failed and errno is set
-		if (errno == EBADF)
-			cout << "Fd is not a valid fd." << endl;
-		if (errno == EINTR)
-			cout << "Interrupted by a signal." << endl;
-		if (errno == EIO)
-			cout << "I/O error occured." << endl;
-		
-		cout << "Close() failed." << endl;
-	
-		return false;
-	}
-	return true;
-}
-
-bool Input::change_input() {
-	// open(const char* FILE_NAME, INT FLAGS)
-	// file will be read only and FILE HAS TO EXIST!
-	if (open(file_name, O_WRONLY) == -1) { // open() failed and errno is set
-		if (errno == EACCES)
-			cout << "File access not allowed; File does not exist." << endl;
-		if (errno == ELOOP)
-			cout << "Too many symbolic links were encountered." << endl;
-		if (errno == ENFILE)
-			cout << "System-wide limit on number of open files has been reached." << endl;
-	
-		cout << "Open() failed." << endl;
-		return false;
-	}
-	return false;
-}
-
-bool Input::restore_save0(int save_0) {
-	if (dup2(save_0, 0) == -1 || close(save_0) == -1) { // dup2() failed and errno is set
-		if (errno == EBADF)
-			cout << "Newfd is out of range." << endl;
-		if (errno == EINTR)
-			cout << "Interrupted by a signal." << endl;
-		if (errno == EMFILE)
-			cout << "Process already has the max. number of fds open." << endl;
-		if (errno == EBADF)
-			cout << "Fd is not a valid fd." << endl;
-		if (errno == EINTR)
-			cout << "Interrupted by a signal." << endl;
-		if (errno == EIO)
-			cout << "I/O error occured." << endl;
-			
-		cout << "Dup2() failed." << endl;
 		return false;
 	}
 	return true;
