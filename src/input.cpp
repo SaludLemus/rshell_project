@@ -99,10 +99,6 @@ void Input::display(){
 
 bool Input::check_dup(int save_0) {
 	if (save_0 == -1) { // dup() failed and errno is set
-		if (errno == EBADF)
-			cout << "New fd is out of the allowed range." << endl;
-		
-		cout << "Dup() failed.)" << endl;
 		return false;
 	}
 	return true;

@@ -18,6 +18,11 @@ Append::~Append(){file_name = 0;}
 
 bool Append::execute(){
 	bool succeed = true;
+
+	if (!leftNode || !rightNode) {
+		return false;
+	}
+
 	if (!file_name) {
 		file_name = rightNode->getCommand();
 	}
@@ -93,10 +98,6 @@ void Append::display(){
 
 bool Append::check_dup(int save_1) {
 	if (save_1 == -1) { // dup() failed and errno is set
-		if (errno == EBADF)
-			cout << "New fd is out of the allowed range." << endl;
-		
-		cout << "Dup() failed.)" << endl;
 		return false;
 	}
 	return true;
