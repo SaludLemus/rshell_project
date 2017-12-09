@@ -4,7 +4,7 @@
 
 <h3 id="Introduction">Introduction</h3>
 <p>Run multiple PATH executables with logic and I/O redirection connectors alongside commenting and precedence. </p>
-<p>This was created by two UCR students, Jose Garcia and Salud Salad, as a sememster long CS project. Thanks to UCR, professors, and the library for giving us the resources and knowledge to accomplish this project.</p>
+<p>This was created by two UCR students, Jose Garcia and Salud Lemus, as a sememster long CS project. Thanks to UCR, professors, and the library for giving us the resources and knowledge to accomplish this project.</p>
 
 <h3 id="Getting Started">Getting Started</h3>
 Getting started is very easy. Once you are in the main directory, execute the following command in the terminal.
@@ -111,3 +111,7 @@ If the parser fails at any point, rshell will exit immediately and no executable
 Syntax is very strict. Extra spaces will crash the parser.
 
 Extra connectors at the end of a line, while meaningless on paper, will crash the parser.
+
+Multiple redirections (one after the other) will not execute properly.
+
+Using connectors interchangeably and redirections will sometimes produce an incorrect result.
