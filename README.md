@@ -9,7 +9,6 @@
 <h3 id="Getting Started">Getting Started</h3>
 Getting started is very easy. Once you are in the main directory, execute the following command in the terminal.
 
-    make
     ./bin/rshell
     
 You are set!
